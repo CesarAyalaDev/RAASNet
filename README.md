@@ -4,7 +4,7 @@ Ransomware As A Service (By @TheRealZeznzo)
 ![alt text](./demo/RAASNet.png)
 ![alt text](./demo/demonware_demo.jpeg)
 
-I use this for demo's on Security and Rensomware Awareness trainings, but I though other might enjoy this too.
+I use this for demo's on Security and Ransomware Awareness trainings, but I though other might enjoy this too.
 
 Still in development.
 
