@@ -6,7 +6,7 @@ To use all features of this software, please do:
 pip3 install -r requirements.txt
 
 Compile this software with:
-pyinstaller -F -w -i images/icon.ico --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes --hidden-import pymsgbox RAASNet.py
+pyinstaller RAASNet.spec
 
 '''
 import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64, platform
