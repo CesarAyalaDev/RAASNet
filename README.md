@@ -45,3 +45,4 @@ Still in development. More features and customisations coming soon.
 + Generate payload with GUI or without
 + Set custom password to lock files with (instead of a random generated key)
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
++ Export keys to CSV or HTML
