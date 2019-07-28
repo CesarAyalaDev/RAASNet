@@ -108,7 +108,6 @@ class MainWindow(Tk):
             'msg' : StringVar(),
             'new_msg' : StringVar(),
             'img_base64' : StringVar(),
-            'new_img_base64' : StringVar(),
         }
 
         # Default Settings
@@ -486,16 +485,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def set_img(self):
         try:
             f = base64.b64encode(open(askopenfilename(initialdir = "./", title = 'Select Image...', filetypes = ([('Image Files', '*.png *.jpg')])), 'rb').read()).decode('utf-8')
-            #f = f.decode('utf-8')
         except FileNotFoundError:
             return
 
         self.options['img_base64'].set(f)
-        '''
-        print('<------------BASE64------------->')
-        print(self.options['img_base64'].get())
-        print('<------------END OF BASE64------------->')
-        '''
+        
     def set_msg(self):
         self.message = Toplevel()
         self.message.title(string = 'Set Custom Message')
