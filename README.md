@@ -15,13 +15,15 @@
 <br>
 
 ![alt text](./demo/PyCrypto-vs-PyAES_demo_10fps.gif "Encryption Speed Demo")
-
+<br>
 Still in development. More features and customisations coming soon.
+<br>
 
 <h1 align="center">
    Features
 </h1>
 <br>
+
 + Generate a ransomware payload
 + Super fast encryption with PyCrypto
 + Compile to to EXE, APP or Unix/Linux executable
@@ -32,9 +34,10 @@ Still in development. More features and customisations coming soon.
 + Fullscreen mode (Warning takes over the screen)
 
 <h1 align="center">
-   Upcoming features:
+   Upcoming features
 </h1>
 <br>
+
 + Custom warning message
 + Custom file extentions to encrypt
 + Encrypt everything with a file extention
