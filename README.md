@@ -9,16 +9,18 @@
 ![alt text](./demo/RAASNet.png)
 ![alt text](./demo/demonware_demo.jpeg)
 
-<p align="center">
+<h1 align="center">
   Super Fast Encryption!
-</p>
+</h1>
 <br>
 
 ![alt text](./demo/PyCrypto-vs-PyAES_demo_10fps.gif "Encryption Speed Demo")
 
 Still in development. More features and customisations coming soon.
 
-Features:
+<h1 align="center">
+   Features
+</h1
 + Generate a ransomware payload
 + Super fast encryption with PyCrypto
 + Compile to to EXE, APP or Unix/Linux executable
@@ -28,7 +30,9 @@ Features:
 + Demo mode (payload won't encrypt anything)
 + Fullscreen mode (Warning takes over the screen)
 
-Upcoming features:
+<h1 align="center">
+   Upcoming features:
+</h1>
 + Custom warning message
 + Custom file extentions to encrypt
 + Encrypt everything with a file extention
