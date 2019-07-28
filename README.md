@@ -16,8 +16,6 @@
 
 ![alt text](./demo/PyCrypto-vs-PyAES_demo_10fps.gif "Encryption Speed Demo")
 <br>
-Still in development. More features and customisations coming soon.
-<br>
 
 <h1 align="center">
    Usage Demo
