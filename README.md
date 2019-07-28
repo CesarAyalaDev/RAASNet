@@ -54,3 +54,22 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Set custom password to lock files with (instead of a random generated key)
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 + Export keys to CSV or HTML
+
+<h1 align="center">
+   Installation
+</h1>
+
+Download and install the latest version of Python 3.<br>
+<br>
+Then do:<br>
+```Shell
+git clone https://github.com/leonv024/RAASNet.git
+```
+
+```Shell
+pip3 install -r requirements.txt
+```
+
+```Shell
+python3 RAASNet.py
+```
