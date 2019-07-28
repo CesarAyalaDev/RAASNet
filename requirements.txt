@@ -1,3 +1,4 @@
 ttkthemes
 pymsgbox
 pycryptodome
+pyinstaller
