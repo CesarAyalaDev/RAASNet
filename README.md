@@ -1,8 +1,15 @@
 # RAASNet
-Ransomware As A Service (By @TheRealZeznzo)
+<p align="center">
+  Ransomware As A Service (By @TheRealZeznzo)
+</p>
 
 ![alt text](./demo/RAASNet.png)
 ![alt text](./demo/demonware_demo.jpeg)
+
+<p align="center">
+  Super Fast Encryption!
+</p>
+![alt text](./demo/PyCrypto-vs-PyAES_demo_10fps.gif)
 
 Still in development. More features and customisations coming soon.
 
