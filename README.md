@@ -31,8 +31,9 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 </h1>
 <br>
 
-+ FUD (Fully UnDetectable by Anti-Virus)
 + Generate a ransomware payload
++ FUD (Fully UnDetectable by Anti-Virus)
++ Works on Windows, MacOS and Linux
 + Super fast encryption with PyCrypto
 + Compile to to EXE, APP or Unix/Linux executable
 + Set a custom icon for your EXE payload
