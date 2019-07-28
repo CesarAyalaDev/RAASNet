@@ -72,8 +72,8 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 <br>
 
 + ~~Custom warning message for your victim~~
-+ Custom file extentions to encrypt
-+ Custom file extention for encrypted
++ Custom file extentions to target for encryption
++ Custom file extention for encrypted files
 + Encrypt everything with a file extention
 + Set target locations
 + Generate a payload without GUI
