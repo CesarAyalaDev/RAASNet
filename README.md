@@ -1,5 +1,8 @@
+<h1 align="center">
+   RAASNet
+</h1>
+
 <p align="center">
-  <h1>RAASNet</h1>
   Ransomware As A Service (By @TheRealZeznzo)
 </p>
 
