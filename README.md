@@ -26,6 +26,10 @@ Still in development. More features and customisations coming soon.
 <a href="https://www.youtube.com/embed/kVtM_xL7_YA" target="_blank"><img src="http://i3.ytimg.com/vi/kVtM_xL7_YA/hqdefault.jpg" 
 alt="RAASNet demo" width="240" height="180" border="10" /></a>
 
+<h1 align="center">
+   Please read
+</h1>
+<br>
 <p align=center>
 This was made to demonstrate ransomware and how easy it is to make. It works on Windows, Linux and MacOS. It's recommended to compile payload.py to EXE to make it more portable.
 
@@ -37,6 +41,7 @@ I recommend a VPN that allows port forwarding (For example; PIA VPN) when using 
 
 The conclusion of this project is that it is easy to brick a system and earn money doing it. This script doesn't use any exploits to achieve its goal, but can easily be coded into it as a nice feature.
 </p>
+<br>
 
 <h1 align="center">
    Features
@@ -69,10 +74,6 @@ The conclusion of this project is that it is easy to brick a system and earn mon
 + Set custom password to lock files with (instead of a random generated key)
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 + Export keys to CSV or HTML
-
-<h1 align="center">
-   Please read
-</h1>
 
 <h1 align="center">
    Installation
