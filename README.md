@@ -12,7 +12,9 @@
 <p align="center">
   Super Fast Encryption!
 </p>
-![alt text](./demo/PyCrypto-vs-PyAES_demo_10fps.gif)
+<br>
+
+![alt text](./demo/PyCrypto-vs-PyAES_demo_10fps.gif "Encryption Speed Demo")
 
 Still in development. More features and customisations coming soon.
 
