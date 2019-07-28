@@ -108,7 +108,7 @@ class MainWindow(Tk):
         }
 
         # Default Settings
-        self.options['host'].set('0.0.0.0')
+        self.options['host'].set('127.0.0.1')
         self.options['port'].set(8989)
         self.options['full_screen_var'].set(1)
         self.options['mode'].set(1)
