@@ -40,17 +40,19 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Decrypt files
 + Demo mode (payload won't encrypt anything)
 + Fullscreen mode (Warning takes over the screen)
++ Custom warning message for your victim
 
 <h1 align="center">
    Upcoming features
 </h1>
 <br>
 
-+ Custom warning message
++ ~~Custom warning message for your victim~~
 + Custom file extentions to encrypt
++ Custom file extention for encrypted
 + Encrypt everything with a file extention
 + Set target locations
-+ Generate payload with GUI or without
++ Generate a payload without GUI
 + Set custom password to lock files with (instead of a random generated key)
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 + Export keys to CSV or HTML
