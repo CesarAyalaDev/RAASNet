@@ -44,7 +44,7 @@ __maintainer__ = "Leon Voerman"
 __email__ = "I don't need spam, open an issue on GitHub, thank you :)"
 __status__ = "Production"
 
-import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64, platform, base64
+import os, sys, subprocess, threading, time, datetime, socket, select, webbrowser, base64, platform, base64
 from tkinter import *
 from tkinter.ttk import *
 from ttkthemes import ThemedStyle
@@ -53,6 +53,11 @@ from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
 from pymsgbox import *
 from io import BytesIO
+if platform.system() == 'Linux':
+    from PIL import Image, ImageTk
+else:
+    import PIL.Image, PIL.ImageTk
+
 
 from src.create_demon import *
 
@@ -310,9 +315,14 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         self.bind("<Escape>", self.exit_event) # Press ESC to quit app
 
-        photo = PIL.Image.open(resource_path('images/logo2.png'))
-        resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
-        photo = PIL.ImageTk.PhotoImage(resized)
+        if platform.system() == 'Linux':
+            photo = Image.open(resource_path('images/logo2.png'))
+            resized = photo.resize((150,150), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(resized)
+        else:
+            photo = PIL.Image.open(resource_path('images/logo2.png'))
+            resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
+            photo = PIL.ImageTk.PhotoImage(resized)
 
         label = Label(self, image=photo, background = 'white')
         label.image = photo # keep a reference!
@@ -379,9 +389,14 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         canvas.grid(row=0, column=0, columnspan = 4)
 
         #photo = PIL.ImageTk.PhotoImage(PIL.Image.open(BytesIO(base64.b64decode(photo_code))))
-        photo = PIL.Image.open(resource_path('images/logo2.png'))
-        resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
-        photo = PIL.ImageTk.PhotoImage(resized)
+        if platform.system() == 'Linux':
+            photo = Image.open(resource_path('images/logo2.png'))
+            resized = photo.resize((150,150), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(resized)
+        else:
+            photo = PIL.Image.open(resource_path('images/logo2.png'))
+            resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
+            photo = PIL.ImageTk.PhotoImage(resized)
 
         label = Label(self.serv, image=photo)
         label.image = photo # keep a reference!

