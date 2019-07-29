@@ -1,0 +1,20 @@
+language: python
+
+# Use container-base infrastructure
+sudo: false
+
+python:
+  - "3.5"
+  - "3.6"
+
+matrix:
+  include:
+    - python: "3.7"
+      dist: xenial
+      sudo: required
+
+install:
+  - pip3 install -r requirements.txt
+
+script:
+  - python3 RAASNet.py
