@@ -55,7 +55,8 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 <br>
 
 + Generate a ransomware payload
-+ FUD (Fully UnDetectable by Anti-Virus)
++ With or without GUI payload
++ FUD (Fully Undetectable by Anti-Virus)
 + Works on Windows, MacOS and Linux
 + Super fast encryption with PyCrypto
 + Compile to to EXE, APP or Unix/Linux executable
@@ -77,7 +78,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Custom file extention for encrypted files
 + Encrypt everything with a file extention
 + Set target locations
-+ Generate a payload without GUI
++ ~~Generate a payload without GUI~~
 + Set custom password to lock files with (instead of a random generated key)
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 + Export keys to CSV or HTML
