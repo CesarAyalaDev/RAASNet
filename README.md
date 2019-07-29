@@ -100,3 +100,8 @@ pip3 install -r requirements.txt
 ```Shell
 python3 RAASNet.py
 ```
+
+On Linux, you might need to install these packages:
+```Shell
+sudo apt install python3-pil python3-pil.imagetk
+```
