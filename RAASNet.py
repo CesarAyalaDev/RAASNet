@@ -169,7 +169,7 @@ class MainWindow(Tk):
         }
 
 
-        self.options['agreed'].set(1)
+        #<activate>
         #<activate>
 
         if not self.options['agreed'].get() == 1:
