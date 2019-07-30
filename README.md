@@ -67,6 +67,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Fullscreen mode (Warning takes over the screen)
 + Custom warning message for your victim
 + Custom image in your payload
++ Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 
 <h1 align="center">
    Upcoming features
@@ -80,7 +81,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Set target locations
 + ~~Generate a payload without GUI~~
 + Set custom password to lock files with (instead of a random generated key)
-+ Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
++ ~~Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)~~
 + Export keys to CSV or HTML
 
 <h1 align="center">
