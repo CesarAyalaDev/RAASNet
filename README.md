@@ -68,6 +68,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Custom warning message for your victim
 + Custom image in your payload
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
++ Multiple encryption methods
 
 <h1 align="center">
    Upcoming features
