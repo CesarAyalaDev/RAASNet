@@ -84,6 +84,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Set custom password to lock files with (instead of a random generated key)
 + ~~Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)~~
 + Export keys to CSV or HTML
++ Encode payload
 
 <h1 align="center">
    Installation
