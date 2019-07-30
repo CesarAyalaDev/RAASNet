@@ -120,6 +120,9 @@ def decrypt_file_pyaes(file_name, key):
     with open(file_name[:-6], 'wb') as fo:
         fo.write(dec)
 
+def rename_file(file_name):
+    os.rename(file_name, file_name[:-6])
+
 class MainWindow(Tk):
     def __init__(self):
         Tk.__init__(self)
@@ -614,15 +617,18 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             messagebox.showwarning('ERROR', 'Failed to generate payload!\n\n%s' % e)
 
     def decrypt_files(self):
-        ask = confirm(text='What type of encryption are we dealing with?', buttons=['PyCrypto', 'PyAES', "I don't know"])
+        ask = confirm(text='What type of encryption are we dealing with?', buttons=['PyCrypto', 'PyAES', 'Ghost', "I don't know"])
         if ask == "I don't know":
             messagebox.showinfo('Encryption type detection', 'Comming Soon!\n\nIf you really dont know, test it on one file first.')
             return
 
-        key = dec_key()
-        key = key.encode('utf-8')
-        if key == False:
-            return
+        if ask == 'Ghost':
+            pass
+        else:
+            key = dec_key()
+            key = key.encode('utf-8')
+            if key == False:
+                return
 
         p = dec_path()
         if p == False:
@@ -649,6 +655,10 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             decrypt_file_pyaes(os.path.join(path, name), key)
                             counter+=1
                             os.remove(os.path.join(path, name))
+                        elif ask == 'Ghost':
+                            rename_file(os.path.join(path, name))
+                            print("[RENAMED] %s" % name)
+                            counter+=1
                         else:
                             return
                     else:
