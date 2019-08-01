@@ -184,7 +184,6 @@ class mainwindow(Tk):
 
     for line in ext.split('\n'):
         list = list + "%s" % ("'." + line + "',\n")
-    print(list)
     demon = demon.replace('<ext>', list)
 
 
