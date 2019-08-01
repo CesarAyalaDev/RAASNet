@@ -69,6 +69,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Custom image in your payload
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 + Multiple encryption methods
++ Select file extentions to target
 
 <h1 align="center">
    Installation
