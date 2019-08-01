@@ -59,7 +59,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + FUD (Fully Undetectable by Anti-Virus)
 + Works on Windows, MacOS and Linux
 + Super fast encryption with PyCrypto
-+ Compile to to EXE, APP or Unix/Linux executable
++ Compile to EXE, APP or Unix/Linux executable
 + Custom icon for your EXE payload
 + Receive keys of victums
 + Decrypt files
