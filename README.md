@@ -61,7 +61,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Super fast encryption with PyCrypto
 + Compile to EXE, APP or Unix/Linux executable
 + Custom icon for your EXE payload
-+ Receive keys of victums
++ Receive keys of victims
 + Decrypt files
 + Demo mode (payload won't encrypt anything)
 + Fullscreen mode (Warning takes over the screen)
