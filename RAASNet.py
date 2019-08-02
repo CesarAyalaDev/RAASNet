@@ -130,8 +130,7 @@ class MainWindow(Tk):
         self.resizable(0,0) # Do not allow to be resized
         self.ttkStyle = ThemedStyle()
         self.ttkStyle.set_theme("arc")
-        #icon = PIL.ImageTk.PhotoImage(resource_path('images/logo2.png'))
-        #self.tk.call('wm', 'iconphoto', self._w, icon) # Call app icon
+
         # Top menu
         menu = Menu(self)
         # File dropdown
@@ -541,6 +540,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def compile_payload(self):
         icon = False
 
+        try:
+            payload = open(self.options['payload_path'].get()).read()
+        except FileNotFoundError:
+            return messagebox.showerror('ERROR', 'File does not exist, check payload path!')
+
         if not self.options['icon_path'].get() == '':
             if not os.path.isfile(self.options['icon_path'].get()):
                 return messagebox.showwarning('ERROR', 'Icon File Not Found!')
@@ -555,10 +559,25 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             else:
                 py = 'pyinstaller'
 
-            if icon == True:
-                os.system("%s -F -w -i %s --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome --hidden-import io --hidden-import pyaes %s" % (py, self.options['icon_path'].get(), self.options['payload_path'].get()))
+            if not 'from tkinter.ttk import' in payload:
+                tk = ''
             else:
-                os.system("%s -F -w --hidden-import tkinter --hidden-import tkinter.ttk --hidden-import pycryptodome --hidden-import io --hidden-import pyaes %s" % (py, self.options['payload_path'].get()))
+                tk = '--hidden-import tkinter --hiddenimport tkinter.ttk --hidden-import io'
+
+            if not 'from Crypto import Random' in payload:
+                crypto = ''
+            else:
+                crypto = '--hidden-import pycryptodome'
+
+            if not 'import pyaes' in payload:
+                pyaes = ''
+            else:
+                pyaes = '--hidden-import pyaes'
+
+            if icon == True:
+                os.system('%s -F -w -i %s %s %s %s %s' % (py, self.options['icon_path'].get(), tk, crypto, pyaes, self.options['payload_path'].get()))
+            else:
+                os.system('%s -F -w %s %s %s %s' % (py, tk, crypto, pyaes, self.options['payload_path'].get()))
 
             messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
             self.comp.destroy()
