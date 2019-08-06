@@ -64,7 +64,7 @@ decrypt_files()
 """
 
     ghost = """
-def decrypt_file(file_name):
+def decrypt_file(file_name, key):
     os.rename(file_name, file_name[:-6])
 """
     pycrypto = """
