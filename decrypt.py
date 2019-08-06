@@ -1,9 +1,12 @@
 import os, sys
+import pyaes
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 from tkinter.filedialog import askdirectory
 from pymsgbox import *
+from Crypto import Random
+from Crypto.Cipher import AES
 
 def pad(s):
     return s + b"\0" * (AES.block_size - len(s) % AES.block_size)
