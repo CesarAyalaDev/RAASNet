@@ -398,7 +398,24 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         generate_demon = Button(self, text = "GENERATE PAYLOAD", command = self.generate, width = 53).grid(row = 5, column = 0, columnspan = 6)
         compile = Button(self, text = "COMPILE PAYLOAD", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
         decrypt = Button(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 7, column = 0, columnspan = 6)
-        exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 8, column = 0, columnspan = 6)
+
+        email = Button(self, text = "EMAIL OPTIONS", command = self.decrypt_files, width = 53)
+        email.grid(row = 8, column = 0, columnspan = 6)
+        email.config(state = DISABLED)
+
+        exploit = Button(self, text = "EXPLOIT OPTIONS", command = self.decrypt_files, width = 53)
+        exploit.grid(row = 9, column = 0, columnspan = 6)
+        exploit.config(state = DISABLED)
+
+        cloak = Button(self, text = "CLOAK PAYLOAD", command = self.decrypt_files, width = 53)
+        cloak.grid(row = 10, column = 0, columnspan = 6)
+        cloak.config(state = DISABLED)
+
+        detection = Button(self, text = "SET DETECTION WARNING", command = self.decrypt_files, width = 53)
+        detection.grid(row = 11, column = 0, columnspan = 6)
+        detection.config(state = DISABLED)
+
+        exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 12, column = 0, columnspan = 6)
 
     def open_server(self):
         self.set = Toplevel()
