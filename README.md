@@ -95,3 +95,9 @@ On Linux, you might need to install these packages:
 ```Shell
 sudo apt install python3-pil python3-pil.imagetk
 ```
+
+Testing connection with remote server:
+```Shell
+# Change the host and port in test_socket.py, default is 127.0.0.1 on port 8989
+python3 test_socket.py
+```
