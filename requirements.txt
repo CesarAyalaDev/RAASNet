@@ -1,5 +1,5 @@
 ttkthemes
 pymsgbox
 pycryptodome
-pyaes
 pyinstaller
+requests
