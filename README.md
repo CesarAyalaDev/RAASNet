@@ -6,7 +6,7 @@
   Ransomware As A Service (By @TheRealZeznzo)
 </p>
 
-![alt text](./demo/RAASNet.png)
+![alt text](./demo/RAASNET-Main.png)
 ![alt text](./demo/demonware_demo.jpeg)
 
 <h1 align="center">
