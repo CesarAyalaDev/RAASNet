@@ -2,7 +2,8 @@
    RAASNet
 </h1>
 
-![alt text](https://img.shields.io/github/license/leonv024/RAASNet "License")
+![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
+![compatible](https://img.shields.io/badge/Windows%2C%20Mac%20%26%20Linux-compatible-brightgreen "Platform")
 
 <p align="center">
   Ransomware As A Service (By @TheRealZeznzo)
