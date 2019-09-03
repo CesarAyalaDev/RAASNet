@@ -3,6 +3,10 @@
 </h1>
 
 <p align="center">
+   ![alt text](https://img.shields.io/github/license/leonv024/RAASNet "License")
+</p>
+
+<p align="center">
   Ransomware As A Service (By @TheRealZeznzo)
 </p>
 
