@@ -4,6 +4,7 @@
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
 ![compatible](https://img.shields.io/badge/Windows%2C%20Mac%20%26%20Linux-compatible-brightgreen "Platform")
+![last commit](https://img.shields.io/github/last-commit/leonv024/RAASNet "Last Commit")
 
 <p align="center">
   Ransomware As A Service (By @TheRealZeznzo)
