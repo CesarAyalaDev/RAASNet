@@ -1371,5 +1371,3 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
 logon = Login()
 logon.mainloop()
-#main = MainWindow()
-#main.mainloop()
