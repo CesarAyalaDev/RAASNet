@@ -335,7 +335,7 @@ class MainWindow(Tk):
             'username' : StringVar(),
             'password' : StringVar(),
             'status' : StringVar(),
-            'license' : StringVar(),
+            'lic' : StringVar(),
             'rank' : StringVar(),
             'inf_counter' : IntVar(),
 
@@ -352,7 +352,7 @@ class MainWindow(Tk):
         self.options['username'].set(username)
         self.options['password'].set(password)
         self.options['status'].set('Active')
-        self.options['license'].set('FREE')
+        self.options['lic'].set('FREE')
         self.options['rank'].set('User')
         self.options['inf_counter'].set(0)
 
@@ -619,7 +619,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(self.prof, text = self.options['status'].get(), background = 'white').grid(row = 2, column = 1, sticky = 'w')
 
         Label(self.prof, text = 'License: ', background = 'white').grid(row = 3, column = 0, sticky = 'w')
-        Label(self.prof, text = self.options['license'].get(), background = 'white').grid(row = 3, column = 1, sticky = 'w')
+        Label(self.prof, text = self.options['lic'].get(), background = 'white').grid(row = 3, column = 1, sticky = 'w')
 
         Label(self.prof, text = 'Rank: ', background = 'white').grid(row = 4, column = 0, sticky = 'w')
         Label(self.prof, text = self.options['rank'].get(), background = 'white').grid(row = 4, column = 1, sticky = 'w')
