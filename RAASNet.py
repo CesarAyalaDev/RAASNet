@@ -284,7 +284,6 @@ class MainWindow(Tk):
         self.title(string = "RAASNet v%s" % __version__) # Set window title
         self.resizable(0,0) # Do not allow to be resized
         self.ttkStyle = ThemedStyle()
-        self.ttkStyle.set_theme("arc")
         self.ttkStyle.set_theme("ubuntu")
 
         # Top menu
@@ -333,6 +332,13 @@ class MainWindow(Tk):
             'new_working_dir' : StringVar(),
             'remove_payload' : IntVar(),
 
+            'username' : StringVar(),
+            'password' : StringVar(),
+            'status' : StringVar(),
+            'license' : StringVar(),
+            'rank' : StringVar(),
+            'inf_counter' : IntVar(),
+
         }
 
 
@@ -341,6 +347,14 @@ class MainWindow(Tk):
 
         if not self.options['agreed'].get() == 1:
             self.show_license()
+
+        # Load profile
+        self.options['username'].set(username)
+        self.options['password'].set(password)
+        self.options['status'].set('Active')
+        self.options['license'].set('FREE')
+        self.options['rank'].set('User')
+        self.options['inf_counter'].set(0)
 
         # Default Settings
         self.options['host'].set('127.0.0.1')
@@ -567,11 +581,60 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         cloak.grid(row = 10, column = 0, columnspan = 6)
         cloak.config(state = DISABLED)
 
-        detection = Button(self, text = "SET DETECTION WARNING", command = self.upgrade, width = 53)
+        detection = Button(self, text = "SETUP ALERTS", command = self.upgrade, width = 53)
         detection.grid(row = 11, column = 0, columnspan = 6)
         detection.config(state = DISABLED)
 
-        exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 12, column = 0, columnspan = 6)
+        profile = Button(self, text = "PROFILE", command = self.profile, width = 53)
+        profile.grid(row = 12, column = 0, columnspan = 6)
+
+        exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 13, column = 0, columnspan = 6)
+
+    def profile(self):
+
+        self.prof = Toplevel()
+        self.prof.title(string = 'Profile')
+        self.prof.configure(background = 'white')
+        self.prof.resizable(0,0)
+
+        self.bind("<Escape>", self.close_profile) # Press ESC to quit app
+
+        if platform.system() == 'Linux':
+            photo = Image.open(resource_path('images/incsec_full.png'))
+            resized = photo.resize((350,350), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(resized)
+        else:
+            photo = PIL.Image.open(resource_path('images/incsec_full.png'))
+            resized = photo.resize((350,150), PIL.Image.ANTIALIAS)
+            photo = PIL.ImageTk.PhotoImage(resized)
+
+        label = Label(self.prof, image=photo, background = 'white')
+        label.image = photo # keep a reference!
+        label.grid(row = 0, column = 0, columnspan = 2)
+
+        Label(self.prof, text = 'Username: ', background = 'white').grid(row = 1, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['username'].get(), background = 'white').grid(row = 1, column = 1, sticky = 'w')
+
+        Label(self.prof, text = 'Status: ', background = 'white').grid(row = 2, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['status'].get(), background = 'white').grid(row = 2, column = 1, sticky = 'w')
+
+        Label(self.prof, text = 'License: ', background = 'white').grid(row = 3, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['license'].get(), background = 'white').grid(row = 3, column = 1, sticky = 'w')
+
+        Label(self.prof, text = 'Rank: ', background = 'white').grid(row = 4, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['rank'].get(), background = 'white').grid(row = 4, column = 1, sticky = 'w')
+
+        Label(self.prof, text = 'Machines inftected: ', background = 'white').grid(row = 5, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['inf_counter'].get(), background = 'white').grid(row = 5, column = 1, sticky = 'w')
+
+        delete = Button(self.prof, text = "DELETE PROFILE", command = self.upgrade, width = 53)
+        delete.grid(row = 6, column = 0, columnspan = 2)
+        delete.config(state = DISABLED)
+
+        upg = Button(self.prof, text = "UPGRADE", command = self.upgrade, width = 53)
+        upg.grid(row = 7, column = 0, columnspan = 2)
+
+
 
     def open_server(self):
         self.set = Toplevel()
@@ -599,7 +662,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         go = Button(self.set, text = 'Ok', command = self.run_server, width = 30)
         go.grid(row = 7, column = 0, columnspan = 2)
         self.set.bind('<Return>', self.set.destroy)
-        close_register = Button(self.set, text = 'Cancel', command = self.set.destroy, width = 30).grid(row = 8, column = 0, columnspan = 2)
+        exit = Button(self.set, text = 'Cancel', command = self.set.destroy, width = 30).grid(row = 8, column = 0, columnspan = 2)
 
     def run_server(self):
         self.set.destroy()
@@ -982,6 +1045,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             messagebox.showwarning('ERROR', 'Failed to generate decryptor!\n\n%s' % e)
 
         self.gen.destroy()
+
     def decrypt_files(self):
         ask = confirm(text='What type of encryption are we dealing with?', buttons=['PyCrypto', 'PyAES', 'Ghost', "I don't know"])
         if ask == "I don't know":
@@ -1195,6 +1259,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             zip = 'Error - Fail'
 
         return '%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip)
+
+    def close_profile(self, event):
+        self.prof.destroy()
 
     def close_server(self, event):
         self.server_socket.close()
