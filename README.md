@@ -97,7 +97,7 @@ python3 RAASNet.py
 
 On Linux, you might need to install these packages:
 ```Shell
-sudo apt install python3-pil python3-pil.imagetk
+sudo apt install python3-tk python3-pil python3-pil.imagetk
 ```
 
 Testing connection with remote server:
