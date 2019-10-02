@@ -148,7 +148,7 @@ class Login(Tk):
         if platform.system() == 'Linux':
             photo = Image.open('images/login_img.png')
             resized = photo.resize((200,250), Image.ANTIALIAS)
-            reg_photo = ImageTk.PhotoImage(resized)
+            photo = ImageTk.PhotoImage(resized)
         else:
             photo = PIL.Image.open('images/login_img.png')
             resized = photo.resize((200,250), PIL.Image.ANTIALIAS)
