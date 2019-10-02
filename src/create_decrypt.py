@@ -41,6 +41,7 @@ def decrypt_files():
               for name in files:
                   if name.endswith(".DEMON"):
                       decrypt_file(os.path.join(path, name), key)
+                      os.remove(os.path.join(path, name))
                       print("[Decrypted] %s" % name)
                       counter+=1
                   elif name == 'README.txt':

