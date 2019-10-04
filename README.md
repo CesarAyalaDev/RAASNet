@@ -75,6 +75,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Multiple encryption methods
 + Select file extentions to target
 + Decide if payload should self-destruct (Console mode feature only)
++ Decide wich drive to target for encryption (working directory)
 + Verified server access through port forwarding VPN
 
 <h1 align="center">
