@@ -74,7 +74,8 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Ghost mode (Rename by adding .DEMON extention instead of encrypting the files)
 + Multiple encryption methods
 + Select file extentions to target
-+ Decide if payload should self-destruct
++ Decide if payload should self-destruct (Console mode feature only)
++ Verified server access through port forwarding VPN
 
 <h1 align="center">
    Installation
