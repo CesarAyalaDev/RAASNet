@@ -129,8 +129,6 @@ class Login(Tk):
         Tk.__init__(self)
         self.title(string = "Login")
         self.resizable(0,0)
-        #self.style = Style()
-        #self.style.theme_use("clam")
         self.ttkStyle = ThemedStyle()
         self.ttkStyle.set_theme("ubuntu")
         self.configure(background = 'white')
@@ -180,7 +178,7 @@ class Login(Tk):
 
         payload = {'user': self.options['username'].get(), 'pwd': check_pwd}
 
-        r = requests.post('https://zeznzo.nl/login.php', params=payload)
+        r = requests.post('https://zeznzo.nl/login.py', params=payload)
         if r.status_code == 200:
             if r.text.startswith('[ERROR]'):
                 messagebox.showwarning('ERROR', r.text.split('[ERROR] ')[1])
@@ -189,7 +187,6 @@ class Login(Tk):
                 self.destroy()
                 main = MainWindow(self.options['username'].get(), self.options['pwd'].get())
                 main.mainloop()
-
         else:
             messagebox.showwarning('ERROR', 'Failed to contact login server!\n%i' % r.status_code)
             return
@@ -260,7 +257,7 @@ class Login(Tk):
         try:
             payload = {'user': self.options['reg_username'].get(), 'pwd': hashlib.sha256(self.options['reg_password'].get().encode('utf-8')).hexdigest()}
 
-            r = requests.post('https://zeznzo.nl/reg.php', params=payload)
+            r = requests.post('https://zeznzo.nl/reg.py', params=payload)
             if r.status_code == 200:
                 if r.text.startswith('[ERROR]'):
                     messagebox.showwarning('ERROR', r.text.split('[ERROR] ')[1])
