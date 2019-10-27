@@ -39,7 +39,7 @@ but can easily be coded into it as a nice feature.
 __author__ = "Leon Voerman"
 __copyright__ = "Copyright 2019, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.2.4"
+__version__ = "1.2.6"
 __maintainer__ = "Leon Voerman"
 __email__ = "I don't need spam, open an issue on GitHub, thank you :)"
 __status__ = "Production"
@@ -139,6 +139,9 @@ class Login(Tk):
             'username' : StringVar(),
             'pwd' : StringVar(),
             'reg_username' : StringVar(),
+            'reg_name' : StringVar(),
+            'reg_surname' : StringVar(),
+            'reg_email' : StringVar(),
             'reg_password' : StringVar(),
             'reg_check_password' : StringVar(),
         }
@@ -184,8 +187,19 @@ class Login(Tk):
                 messagebox.showwarning('ERROR', r.text.split('[ERROR] ')[1])
                 return
             elif r.text.startswith('[OK]'):
+                data = r.text[13:]
+                data = data.split('\n')
+                prof = {}
+
+                try:
+                    for i in data:
+                        i = i.split('=')
+                        prof[i[0]] = i[1]
+                except Exception:
+                    pass
+
                 self.destroy()
-                main = MainWindow(self.options['username'].get(), self.options['pwd'].get())
+                main = MainWindow(self.options['username'].get(), self.options['pwd'].get(), prof['Email'], prof['Name'], prof['Surname'], prof['Rank'], prof['Status'])
                 main.mainloop()
         else:
             messagebox.showwarning('ERROR', 'Failed to contact login server!\n%i' % r.status_code)
@@ -220,25 +234,36 @@ class Login(Tk):
         self.options['reg_username'].grid(row = 2, column = 0, columnspan = 2)
         self.options['reg_username'].focus()
 
-        Label(self.reg, text = 'Password', background = 'white').grid(row = 3, column = 0, columnspan = 2)
-        self.options['reg_password'] = Entry(self.reg, textvariable = self.options['reg_password'], width = 30, show = '*')
-        self.options['reg_password'].grid(row = 4, column = 0, columnspan = 2)
+        Label(self.reg, text = 'Name', background = 'white').grid(row = 3, column = 0, columnspan = 2)
+        self.options['reg_name'] = Entry(self.reg, textvariable = self.options['reg_name'], width = 30)
+        self.options['reg_name'].grid(row = 4, column = 0, columnspan = 2)
 
-        Label(self.reg, text = 'Confirm Password', background = 'white').grid(row = 5, column = 0, columnspan = 2)
+        Label(self.reg, text = 'Surname', background = 'white').grid(row = 5, column = 0, columnspan = 2)
+        self.options['reg_surname'] = Entry(self.reg, textvariable = self.options['reg_surname'], width = 30)
+        self.options['reg_surname'].grid(row = 6, column = 0, columnspan = 2)
+
+        Label(self.reg, text = 'Email', background = 'white').grid(row = 7, column = 0, columnspan = 2)
+        self.options['reg_email'] = Entry(self.reg, textvariable = self.options['reg_email'], width = 30)
+        self.options['reg_email'].grid(row = 8, column = 0, columnspan = 2)
+
+        Label(self.reg, text = 'Password', background = 'white').grid(row = 9, column = 0, columnspan = 2)
+        self.options['reg_password'] = Entry(self.reg, textvariable = self.options['reg_password'], width = 30, show = '*')
+        self.options['reg_password'].grid(row = 10, column = 0, columnspan = 2)
+
+        Label(self.reg, text = 'Confirm Password', background = 'white').grid(row = 11, column = 0, columnspan = 2)
         self.options['reg_check_password'] = Entry(self.reg, textvariable = self.options['reg_check_password'], width = 30, show = '*')
-        self.options['reg_check_password'].grid(row = 6, column = 0, columnspan = 2)
+        self.options['reg_check_password'].grid(row = 12, column = 0, columnspan = 2)
 
         register_button = Button(self.reg, text = 'Register', command = self.register_user, width = 35)
-        register_button.grid(row = 7, column = 0, columnspan = 2)
+        register_button.grid(row = 13, column = 0, columnspan = 2)
         self.reg.bind('<Return>', self.register_user_event)
-        close_register = Button(self.reg, text = 'Cancel', command = self.reg.destroy, width = 35).grid(row = 8, column = 0, columnspan = 2)
+        close_register = Button(self.reg, text = 'Cancel', command = self.reg.destroy, width = 35).grid(row = 14, column = 0, columnspan = 2)
 
 
     def register_user_event(self, event):
         self.register_user()
 
     def register_user(self):
-
         # Check if passwords match
         if not self.options['reg_password'].get() == self.options['reg_check_password'].get():
             messagebox.showwarning('ERROR', 'Passwords do not match!')
@@ -247,7 +272,7 @@ class Login(Tk):
             pass
 
         # Check if every entry was filled
-        if self.options['reg_username'].get() == '' or self.options['reg_password'].get() == '':
+        if self.options['reg_username'].get() == '' or self.options['reg_password'].get() == '' or self.options['reg_name'].get() == '' or self.options['reg_surname'].get() == ''  or self.options['reg_email'].get() == '' :
             messagebox.showwarning("ERROR", "Not all fields were filled!")
             return
         else:
@@ -255,7 +280,7 @@ class Login(Tk):
 
         # check if username already exists
         try:
-            payload = {'user': self.options['reg_username'].get(), 'pwd': hashlib.sha256(self.options['reg_password'].get().encode('utf-8')).hexdigest()}
+            payload = {'user': self.options['reg_username'].get(), 'pwd': hashlib.sha256(self.options['reg_password'].get().encode('utf-8')).hexdigest(), 'name' : self.options['reg_name'].get(), 'surname' : self.options['reg_surname'].get(), 'email' : self.options['reg_email'].get()}
 
             r = requests.post('https://zeznzo.nl/reg.py', data=payload)
             if r.status_code == 200:
@@ -276,7 +301,7 @@ class Login(Tk):
         self.reg.destroy()
 
 class MainWindow(Tk):
-    def __init__(self, username, password):
+    def __init__(self, username, password, email, name, surname, rank, status):
         Tk.__init__(self)
         self.title(string = "RAASNet v%s" % __version__) # Set window title
         self.resizable(0,0) # Do not allow to be resized
@@ -332,15 +357,17 @@ class MainWindow(Tk):
 
             'username' : StringVar(),
             'password' : StringVar(),
-            'status' : StringVar(),
-            'lic' : StringVar(),
+            'email' : StringVar(),
+            'name' : StringVar(),
+            'surname' : StringVar(),
             'rank' : StringVar(),
+            'status' : StringVar(),
             'inf_counter' : IntVar(),
 
         }
 
 
-        self.options['agreed'].set(1)
+        #<activate>
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -349,9 +376,11 @@ class MainWindow(Tk):
         # Load profile
         self.options['username'].set(username)
         self.options['password'].set(password)
-        self.options['status'].set('Active')
-        self.options['lic'].set('FREE')
-        self.options['rank'].set('User')
+        self.options['email'].set(email)
+        self.options['name'].set(name)
+        self.options['surname'].set(surname)
+        self.options['rank'].set(rank)
+        self.options['status'].set(status)
         self.options['inf_counter'].set(0)
 
         # Default Settings
@@ -614,17 +643,23 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(self.prof, text = 'Username: ', background = 'white').grid(row = 1, column = 0, sticky = 'w')
         Label(self.prof, text = self.options['username'].get(), background = 'white').grid(row = 1, column = 1, sticky = 'w')
 
-        Label(self.prof, text = 'Status: ', background = 'white').grid(row = 2, column = 0, sticky = 'w')
-        Label(self.prof, text = self.options['status'].get(), background = 'white').grid(row = 2, column = 1, sticky = 'w')
+        Label(self.prof, text = 'Email: ', background = 'white').grid(row = 2, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['email'].get(), background = 'white').grid(row = 2, column = 1, sticky = 'w')
 
-        Label(self.prof, text = 'License: ', background = 'white').grid(row = 3, column = 0, sticky = 'w')
-        Label(self.prof, text = self.options['lic'].get(), background = 'white').grid(row = 3, column = 1, sticky = 'w')
+        Label(self.prof, text = 'Name: ', background = 'white').grid(row = 3, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['name'].get(), background = 'white').grid(row = 3, column = 1, sticky = 'w')
 
-        Label(self.prof, text = 'Rank: ', background = 'white').grid(row = 4, column = 0, sticky = 'w')
-        Label(self.prof, text = self.options['rank'].get(), background = 'white').grid(row = 4, column = 1, sticky = 'w')
+        Label(self.prof, text = 'Surname: ', background = 'white').grid(row = 4, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['surname'].get(), background = 'white').grid(row = 4, column = 1, sticky = 'w')
 
-        Label(self.prof, text = 'Machines inftected: ', background = 'white').grid(row = 5, column = 0, sticky = 'w')
-        Label(self.prof, text = self.options['inf_counter'].get(), background = 'white').grid(row = 5, column = 1, sticky = 'w')
+        Label(self.prof, text = 'Rank: ', background = 'white').grid(row = 5, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['rank'].get(), background = 'white').grid(row = 5, column = 1, sticky = 'w')
+
+        Label(self.prof, text = 'Status: ', background = 'white').grid(row = 6, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['status'].get(), background = 'white').grid(row = 6, column = 1, sticky = 'w')
+
+        Label(self.prof, text = 'Machines inftected: ', background = 'white').grid(row = 7, column = 0, sticky = 'w')
+        Label(self.prof, text = self.options['inf_counter'].get(), background = 'white').grid(row = 7, column = 1, sticky = 'w')
 
         delete = Button(self.prof, text = "DELETE PROFILE", command = self.upgrade, width = 53)
         delete.grid(row = 6, column = 0, columnspan = 2)
@@ -642,7 +677,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.bind("<Escape>", self.close_exploit) # Press ESC to quit app
 
         Label(self.exp, text = 'Spoof extention', background = 'white').grid(row = 0, column = 0)
-
 
     def open_server(self):
         self.set = Toplevel()
