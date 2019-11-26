@@ -4,6 +4,7 @@
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
 ![compatible](https://img.shields.io/badge/Windows%2C%20Mac%20%26%20Linux-compatible-brightgreen "Platform")
+![status](https://img.shields.io/website?down_color=Red&down_message=Offline&label=Service%20Status&up_color=Green&up_message=Online&url=https%3A%2F%2Fzeznzo.nl%2Flogin.py "Status")
 ![last commit](https://img.shields.io/github/last-commit/leonv024/RAASNet "Last Commit")
 ![Twitter](https://img.shields.io/badge/Twitter-@TheRealZeznzo-blue "Twitter")
 
