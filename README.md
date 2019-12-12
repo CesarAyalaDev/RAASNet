@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-   Register and Visit: jezsjxtthkqhlqoc.onion
+   Visit: jezsjxtthkqhlqoc.onion
 </h3>
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
