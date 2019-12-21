@@ -17,7 +17,7 @@
 </p>
 
 ![alt text](./demo/RAASNET-Main.png)
-![alt text](./demo/dashboard.jpeg)
+![alt text](./demo/dashboard.png)
 ![alt text](./demo/demonware_demo.jpeg)
 
 <h1 align="center">
