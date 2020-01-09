@@ -1186,8 +1186,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                         data = sockfd.recv(1024)
                         if data:
                             data = data.decode('UTF-8')
-                            #ip = addr[0]
-                            ip = '8.8.8.8'
+                            ip = addr[0]
                             local = data.split('$')[0]
                             system = data.split('$')[1]
                             key = data.split('$')[2].strip()[2:].strip()[:-1]
