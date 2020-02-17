@@ -16,7 +16,7 @@
   Ransomware As A Service
 </p>
 
-![alt text](./demo/RAASNET-Main.png)
+![alt text](./demo/RAASNET-Main.png?)
 ![alt text](./demo/dashboard.png)
 ![alt text](./demo/demonware_demo.jpeg)
 
