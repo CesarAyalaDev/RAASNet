@@ -12,6 +12,8 @@
 ![last commit](https://img.shields.io/github/last-commit/leonv024/RAASNet "Last Commit")
 ![Twitter](https://img.shields.io/badge/Twitter-@TheRealZeznzo-blue "Twitter")
 
+<a href="https://www.buymeacoffee.com/Zeznzo" target="_blank">Buy me a coffee :)</a>
+
 <p align="center">
   Ransomware As A Service
 </p>
@@ -114,5 +116,3 @@ Testing connection with remote server:
 # Change the host and port in test_socket.py, default is 127.0.0.1 on port 8989
 python3 test_socket.py
 ```
-
-<a href="https://www.buymeacoffee.com/Zeznzo" target="_blank">Buy me a coffee :)</a>
