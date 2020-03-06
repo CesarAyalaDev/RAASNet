@@ -12,7 +12,9 @@
 ![last commit](https://img.shields.io/github/last-commit/leonv024/RAASNet "Last Commit")
 ![Twitter](https://img.shields.io/badge/Twitter-@TheRealZeznzo-blue "Twitter")
 
-<a href="https://www.buymeacoffee.com/Zeznzo" target="_blank">Buy me a coffee :)</a>
+<h3 align="center">
+   <a href="https://www.buymeacoffee.com/Zeznzo" target="_blank">Buy me a coffee :)</a>
+</h3>
 
 <p align="center">
   Ransomware As A Service
