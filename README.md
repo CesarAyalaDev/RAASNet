@@ -13,8 +13,7 @@
 ![Twitter](https://img.shields.io/badge/Twitter-@TheRealZeznzo-blue "Twitter")
 
 <h3 align="center">
-   <a href="https://www.buymeacoffee.com/Zeznzo" target="_blank">Buy me a coffee :)</a>
-   <a href="https://www.buymeacoffee.com/Zeznzo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/lato-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+   <a href="https://www.buymeacoffee.com/Zeznzo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/lato-blue.png" alt="Buy Me A Coffee" style="height: 21px !important;width: 187px !important;" ></a>
 </h3>
 
 <p align="center">
