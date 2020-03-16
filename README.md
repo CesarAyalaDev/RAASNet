@@ -21,6 +21,7 @@
 </p>
 
 ![alt text](./demo/RAASNET-demo.png)
+![alt text](./demo/dashboard.png)
 ![alt text](./demo/dashboard-demo.png)
 ![alt text](./demo/demonware_demo.jpeg)
 
