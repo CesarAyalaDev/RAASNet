@@ -37,9 +37,9 @@ but can easily be coded into it as a nice feature.
 
 # Headers
 __author__ = "Leon Voerman"
-__copyright__ = "Copyright 2019, Incoming Security"
+__copyright__ = "Copyright 2019-2020, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.2.6"
+__version__ = "1.2.7"
 __maintainer__ = "Leon Voerman"
 __email__ = "I don't need spam, open an issue on GitHub, thank you :)"
 __status__ = "Production"
@@ -1376,7 +1376,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             country = data['country'] + ' (' + data['countryCode'] + ')'
             region = data['regionName']
             city = data['city']
-            isp = data['isp']
+            isp = data['isp'].replace(',', '')
             zip = data['zip']
             lat = data['lat']
             lon = data['lon']
