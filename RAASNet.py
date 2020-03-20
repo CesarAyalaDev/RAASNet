@@ -852,6 +852,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         mac.grid(row = 1, column = 0, sticky = 'w')
         lin = Radiobutton(os_frame, text = 'Linux', variable = self.options['os'], value = 'linux')
         lin.grid(row = 2, column = 0, sticky = 'w')
+        an = Radiobutton(os_frame, text = 'Android (In Development)', variable = self.options['os'], value = 'android')
+        an.grid(row = 3, column = 0, sticky = 'w')
 
         sett_frame = LabelFrame(self.comp, text = 'Options')
         sett_frame.grid(row = 1, column = 1, columnspan = 2)
@@ -879,6 +881,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             self.options['os'].set('linux')
             win.config(state = DISABLED)
             mac.config(state = DISABLED)
+        an.config(state = DISABLED)
 
     def compile_payload(self):
         icon = False
