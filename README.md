@@ -2,9 +2,9 @@
    RAASNet
 </h1>
 
-<h3 align="center">
-   jezsjxtthkqhlqoc.onion
-</h3>
+<h2 align="center">
+   Visit jezsjxtthkqhlqoc.onion for a complete C&C.
+</h2>
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
 ![compatible](https://img.shields.io/badge/Windows%2C%20Mac%20%26%20Linux-compatible-brightgreen "Platform")
