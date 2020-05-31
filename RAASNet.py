@@ -150,10 +150,22 @@ class Login(Tk):
             photo = Image.open('images/login_img.png')
             resized = photo.resize((200,250), Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(resized)
+
+            photo2 = Image.open('images/an.jpg')
+            resized2 = photo2.resize((318,450), Image.ANTIALIAS)
+            photo2 = ImageTk.PhotoImage(resized2)
         else:
             photo = PIL.Image.open('images/login_img.png')
             resized = photo.resize((200,250), PIL.Image.ANTIALIAS)
             photo = PIL.ImageTk.PhotoImage(resized)
+
+            photo2 = PIL.Image.open('images/an.jpg')
+            resized2 = photo2.resize((318,450), PIL.Image.ANTIALIAS)
+            photo2 = PIL.ImageTk.PhotoImage(resized2)
+
+        label2 = Label(self, image=photo2, background = 'white')
+        label2.image = photo2 # keep a reference!
+        label2.grid(row = 0, column = 2, columnspan = 1, rowspan = 8)
 
         label = Label(self, image=photo, background = 'white')
         label.image = photo # keep a reference!
@@ -170,6 +182,7 @@ class Login(Tk):
         login_clk = Button(self, text = 'Login', command = self.login, width = 35).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
         register_clk = Button(self, text = 'Register', command = self.register, width = 35).grid(row = 6, column = 0, columnspan = 2, sticky = 'w')
         close = Button(self, text = 'Exit', command = self.destroy, width = 35).grid(row = 7, column = 0, columnspan = 2, sticky = 'w')
+        contact = Button(self, text = 'Contact', command = self.contact, width = 35).grid(row = 7, column = 2, columnspan = 2, sticky = 'w')
         self.bind("<Return>", self.login_event) # Press ESC to quit app
 
     def login_event(self, event):
@@ -259,6 +272,44 @@ class Login(Tk):
         self.reg.bind('<Return>', self.register_user_event)
         close_register = Button(self.reg, text = 'Cancel', command = self.reg.destroy, width = 35).grid(row = 14, column = 0, columnspan = 2)
 
+    def contact(self):
+        self.contact = Toplevel()
+        self.contact.title(string = 'Contact')
+        self.contact.configure(background = 'white')
+        self.contact.resizable(0,0)
+
+        #self.bind("<Escape>", self.close_contact) # Press ESC to quit app
+
+        if platform.system() == 'Linux':
+            photo = Image.open(resource_path('images/incsec_full.png'))
+            resized = photo.resize((350,150), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(resized)
+        else:
+            photo = PIL.Image.open(resource_path('images/incsec_full.png'))
+            resized = photo.resize((300,100), PIL.Image.ANTIALIAS)
+            photo = PIL.ImageTk.PhotoImage(resized)
+
+        label = Label(self.contact, image=photo, background = 'white')
+        label.image = photo # keep a reference!
+        label.grid(row = 0, column = 0, columnspan = 2)
+
+        Label(self.contact, text = 'Twitter: ', background = 'white').grid(row = 1, column = 0, sticky = 'w')
+        Label(self.contact, text = '@TheRealZeznzo', background = 'white').grid(row = 1, column = 1, sticky = 'w')
+
+        Label(self.contact, text = 'LinkedIn: ', background = 'white').grid(row = 2, column = 0, sticky = 'w')
+        Label(self.contact, text = 'Leon Voerman', background = 'white').grid(row = 2, column = 1, sticky = 'w')
+
+        Label(self.contact, text = 'GitHub: ', background = 'white').grid(row = 3, column = 0, sticky = 'w')
+        Label(self.contact, text = 'leonv024', background = 'white').grid(row = 3, column = 1, sticky = 'w')
+
+        Label(self.contact, text = 'Email: ', background = 'white').grid(row = 4, column = 0, sticky = 'w')
+        Label(self.contact, text = 'mail@leonvoerman.nl', background = 'white').grid(row = 4, column = 1, sticky = 'w')
+
+        Label(self.contact, text = 'Rank: ', background = 'white').grid(row = 5, column = 0, sticky = 'w')
+        Label(self.contact, text = 'Root Admin', background = 'white').grid(row = 5, column = 1, sticky = 'w')
+
+        Label(self.contact, text = 'Status: ', background = 'white').grid(row = 6, column = 0, sticky = 'w')
+        Label(self.contact, text = 'Active', background = 'white').grid(row = 6, column = 1, sticky = 'w')
 
     def register_user_event(self, event):
         self.register_user()
@@ -369,7 +420,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -633,7 +684,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         if platform.system() == 'Linux':
             photo = Image.open(resource_path('images/incsec_full.png'))
-            resized = photo.resize((350,350), Image.ANTIALIAS)
+            resized = photo.resize((350,150), Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(resized)
         else:
             photo = PIL.Image.open(resource_path('images/incsec_full.png'))
