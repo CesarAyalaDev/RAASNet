@@ -41,7 +41,7 @@ __copyright__ = "Copyright 2019-2020, Incoming Security"
 __license__ = "GPLv3"
 __version__ = "1.2.7"
 __maintainer__ = "Leon Voerman"
-__email__ = "I don't need spam, open an issue on GitHub, thank you :)"
+__email__ = "raasnet@protonmail.com"
 __status__ = "Production"
 
 import os, sys, subprocess, threading, time, datetime, socket, select, webbrowser, base64, platform, base64, requests, hashlib
@@ -303,7 +303,7 @@ class Login(Tk):
         Label(self.contact, text = 'leonv024', background = 'white').grid(row = 3, column = 1, sticky = 'w')
 
         Label(self.contact, text = 'Email: ', background = 'white').grid(row = 4, column = 0, sticky = 'w')
-        Label(self.contact, text = 'mail@leonvoerman.nl', background = 'white').grid(row = 4, column = 1, sticky = 'w')
+        Label(self.contact, text = 'raasnet@protonmail.com', background = 'white').grid(row = 4, column = 1, sticky = 'w')
 
         Label(self.contact, text = 'Rank: ', background = 'white').grid(row = 5, column = 0, sticky = 'w')
         Label(self.contact, text = 'Root Admin', background = 'white').grid(row = 5, column = 1, sticky = 'w')
