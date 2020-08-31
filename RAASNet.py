@@ -369,7 +369,6 @@ class MainWindow(Tk):
         # Help dropdown
         help = Menu(menu, tearoff=0)
         help.add_command(label="View License", command=self.view_license)
-        help.add_command(label="Upgrade to PRO version", command=self.upgrade)
         help.add_command(label="Visit Project on GitHub", command=self.open_github)
         menu.add_cascade(label="Help", menu=help)
 
@@ -652,22 +651,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         compile = Button(self, text = "COMPILE PAYLOAD", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
         decrypt = Button(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 7, column = 0, columnspan = 6)
 
-        email = Button(self, text = "EMAIL OPTIONS", command = self.upgrade, width = 53)
-        email.grid(row = 8, column = 0, columnspan = 6)
-        email.config(state = DISABLED)
-
-        exploit = Button(self, text = "EXPLOIT OPTIONS", command = self.upgrade, width = 53)
-        exploit.grid(row = 9, column = 0, columnspan = 6)
-        exploit.config(state = DISABLED)
-
-        cloak = Button(self, text = "CLOAK PAYLOAD", command = self.upgrade, width = 53)
-        cloak.grid(row = 10, column = 0, columnspan = 6)
-        cloak.config(state = DISABLED)
-
-        detection = Button(self, text = "SETUP ALERTS", command = self.upgrade, width = 53)
-        detection.grid(row = 11, column = 0, columnspan = 6)
-        detection.config(state = DISABLED)
-
         profile = Button(self, text = "PROFILE", command = self.profile, width = 53)
         profile.grid(row = 12, column = 0, columnspan = 6)
 
@@ -713,14 +696,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(self.prof, text = 'Status: ', background = 'white').grid(row = 6, column = 0, sticky = 'w')
         Label(self.prof, text = self.options['status'].get(), background = 'white').grid(row = 6, column = 1, sticky = 'w')
 
-        Label(self.prof, text = 'Machines inftected: ', background = 'white').grid(row = 7, column = 0, sticky = 'w')
-        Label(self.prof, text = self.options['inf_counter'].get(), background = 'white').grid(row = 7, column = 1, sticky = 'w')
-
         delete = Button(self.prof, text = "DELETE PROFILE", command = self.delete_me, width = 53)
         delete.grid(row = 6, column = 0, columnspan = 2)
-
-        upg = Button(self.prof, text = "UPGRADE", command = self.upgrade, width = 53)
-        upg.grid(row = 7, column = 0, columnspan = 2)
 
     def delete_me(self):
         return messagebox.showinfo('Cannot do that', 'Please, visit: http://jezsjxtthkqhlqoc.onion/ with Tor browser and login.\n\nYou can delete your profile under the Profile section there.')
@@ -1485,46 +1462,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
     def exit_event(self, event):
         exit(0)
 
-    def upgrade(self):
-        pro = """
-       ##(.             (##
-      (,    .###*.###*     #
-     ((                    .#
-    .#./##############(*    ((
-                             (.
-   #################          #
-  ############      #,         #
- ############*      .#          #
-/#############*     #           .#
- ###############  #             #
-   #.         #    #          #,
-    .#       #      #,      #(
-      /#   .#        (,   (#
-        (( ((((((((((((**#     UNLOCK PRO FEATURES
-          #,           #               FOR BETTER PENTESTING
-            #        #,
-             *#    (/   By Incoming Security
-               (#/(
-
-,_._._._._._._._._|__________________________________________________________,
-|_|_|_|_|_|_|_|_|_|_________________________________________________________/
-                  !
-
-        (===||:::::::::::::::> PRO Features <:::::::::::::::||===)
-"""
-
-        self.pro = Toplevel()
-        self.pro.title(string = 'Upgrade to PRO version')
-        self.pro.configure(background = 'white')
-        self.pro.resizable(0,0)
-
-        box = Text(self.pro, height = 25, width = 100)
-        box.grid(row = 0, column = 0, columnspan = 2)
-        buy = Button(self.pro, text = 'BUY PRODUCT KEY', command = self.open_buy, width = 25).grid(row = 1, column = 0)
-        activate = Button(self.pro, text = 'ACTIVATE', command = self.activate, width = 25).grid(row = 1, column = 1)
-
-        box.insert('1.0', pro)
-
     def activate(self):
         key = password(text='Please enter your activation key', title='Enter Key')
         if key == None:
@@ -1532,11 +1469,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             return
 
         self.check_activation(key)
-
-    def check_activation(self, key):
-        messagebox.showerror('Failed to upgrade', 'Invalid key')
-        self.pro.destroy()
-
 
     def show_license(self):
         self.withdraw()
