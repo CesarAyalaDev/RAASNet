@@ -3,7 +3,10 @@
 </h1>
 
 <h2 align="center">
-   Visit jezsjxtthkqhlqoc.onion for a complete C&C.
+   Visit our Onion site for a complete C&C !
+   
+   New Onion Domain:
+   hplqdv5fo3vw3fjyamyer7yuc7xtvtop2j3fipc7psf3pxvhoqjoqkid.onion
 </h2>
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
