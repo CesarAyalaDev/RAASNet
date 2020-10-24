@@ -39,7 +39,7 @@ but can easily be coded into it as a nice feature.
 __author__ = "Leon Voerman"
 __copyright__ = "Copyright 2019-2020, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.2.7"
+__version__ = "1.2.8"
 __maintainer__ = "Leon Voerman"
 __email__ = "raasnet@protonmail.com"
 __status__ = "Production"
@@ -47,7 +47,6 @@ __status__ = "Production"
 import os, sys, subprocess, threading, time, datetime, socket, select, webbrowser, base64, platform, base64, requests, hashlib
 from tkinter import *
 from tkinter.ttk import *
-from ttkthemes import ThemedStyle
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
@@ -124,13 +123,31 @@ def decrypt_file_pyaes(file_name, key):
 def rename_file(file_name):
     os.rename(file_name, file_name[:-6])
 
+
+class HoverButton(tk.Button):
+    def __init__(self, master, **kw):
+        tk.Button.__init__(self,master=master,**kw)
+        self['bg']                 = '#545b62'
+        self['activebackground']   = '#ef5350'
+        self['fg']                 = 'white'
+        self['relief']             = FLAT
+        self['pady']               = 10
+        self.defaultBackground     = self["bg"]
+
+        self.bind("<Enter>", self.on_enter)
+        self.bind("<Leave>", self.on_leave)
+
+    def on_enter(self, e):
+        self['background'] = self['activebackground']
+
+    def on_leave(self, e):
+        self['background'] = self.defaultBackground
+
 class Login(Tk):
     def __init__(self):
         Tk.__init__(self)
         self.title(string = "Login")
         self.resizable(0,0)
-        self.ttkStyle = ThemedStyle()
-        self.ttkStyle.set_theme("ubuntu")
         self.configure(background = 'white')
 
         self.bind("<Escape>", self.exit) # Press ESC to quit app
@@ -152,7 +169,7 @@ class Login(Tk):
             photo = ImageTk.PhotoImage(resized)
 
             photo2 = Image.open('images/an.jpg')
-            resized2 = photo2.resize((318,450), Image.ANTIALIAS)
+            resized2 = photo2.resize((318,500), Image.ANTIALIAS)
             photo2 = ImageTk.PhotoImage(resized2)
         else:
             photo = PIL.Image.open('images/login_img.png')
@@ -160,7 +177,7 @@ class Login(Tk):
             photo = PIL.ImageTk.PhotoImage(resized)
 
             photo2 = PIL.Image.open('images/an.jpg')
-            resized2 = photo2.resize((318,450), PIL.Image.ANTIALIAS)
+            resized2 = photo2.resize((320,500), PIL.Image.ANTIALIAS)
             photo2 = PIL.ImageTk.PhotoImage(resized2)
 
         label2 = Label(self, image=photo2, background = 'white')
@@ -179,10 +196,10 @@ class Login(Tk):
         Label(self, text = 'Password', background = 'white', foreground = 'black', font='Helvetica 12 bold').grid(row = 3, column = 0, columnspan = 2)
         Entry(self, textvariable = self.options['pwd'], show = '*', width = 31).grid(row = 4, column = 0, columnspan = 2)
 
-        login_clk = Button(self, text = 'Login', command = self.login, width = 35).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
-        register_clk = Button(self, text = 'Register', command = self.register, width = 35).grid(row = 6, column = 0, columnspan = 2, sticky = 'w')
-        close = Button(self, text = 'Exit', command = self.destroy, width = 35).grid(row = 7, column = 0, columnspan = 2, sticky = 'w')
-        contact = Button(self, text = 'Contact', command = self.contact, width = 35).grid(row = 7, column = 2, columnspan = 2, sticky = 'w')
+        login_clk = HoverButton(self, text = 'Login', command = self.login, width = 35).grid(row = 5, column = 0, columnspan = 2, sticky = 'w')
+        register_clk = HoverButton(self, text = 'Register', command = self.register, width = 35).grid(row = 6, column = 0, columnspan = 2, sticky = 'w')
+        close = HoverButton(self, text = 'Exit', command = self.destroy, width = 35).grid(row = 7, column = 0, columnspan = 2, sticky = 'w')
+        contact = HoverButton(self, text = 'Contact', command = self.contact, width = 35).grid(row = 7, column = 2, columnspan = 2, sticky = 'e')
         self.bind("<Return>", self.login_event) # Press ESC to quit app
 
     def login_event(self, event):
@@ -267,10 +284,10 @@ class Login(Tk):
         self.options['reg_check_password'] = Entry(self.reg, textvariable = self.options['reg_check_password'], width = 30, show = '*')
         self.options['reg_check_password'].grid(row = 12, column = 0, columnspan = 2)
 
-        register_button = Button(self.reg, text = 'Register', command = self.register_user, width = 35)
+        register_button = HoverButton(self.reg, text = 'Register', command = self.register_user, width = 35)
         register_button.grid(row = 13, column = 0, columnspan = 2)
         self.reg.bind('<Return>', self.register_user_event)
-        close_register = Button(self.reg, text = 'Cancel', command = self.reg.destroy, width = 35).grid(row = 14, column = 0, columnspan = 2)
+        close_register = HoverButton(self.reg, text = 'Cancel', command = self.reg.destroy, width = 35).grid(row = 14, column = 0, columnspan = 2)
 
     def contact(self):
         self.contact = Toplevel()
@@ -310,6 +327,7 @@ class Login(Tk):
 
         Label(self.contact, text = 'Status: ', background = 'white').grid(row = 6, column = 0, sticky = 'w')
         Label(self.contact, text = 'Active', background = 'white').grid(row = 6, column = 1, sticky = 'w')
+        close_contact = HoverButton(self.contact, text = 'Close', command = self.contact.destroy, width = 35).grid(row = 7, column = 0, columnspan = 2)
 
     def register_user_event(self, event):
         self.register_user()
@@ -356,8 +374,6 @@ class MainWindow(Tk):
         Tk.__init__(self)
         self.title(string = "RAASNet v%s" % __version__) # Set window title
         self.resizable(0,0) # Do not allow to be resized
-        self.ttkStyle = ThemedStyle()
-        self.ttkStyle.set_theme("ubuntu")
 
         # Top menu
         menu = Menu(self)
@@ -368,7 +384,7 @@ class MainWindow(Tk):
 
         # Help dropdown
         help = Menu(menu, tearoff=0)
-        help.add_command(label="View License", command=self.view_license)
+        help.add_command(label="View License", command=self.show_license)
         help.add_command(label="Visit Project on GitHub", command=self.open_github)
         menu.add_cascade(label="Help", menu=help)
 
@@ -419,7 +435,6 @@ class MainWindow(Tk):
         }
 
 
-        self.options['agreed'].set(1)
         #<activate>
 
         if not self.options['agreed'].get() == 1:
@@ -640,21 +655,22 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         label = Label(self, image=photo, background = 'white')
         label.image = photo # keep a reference!
-        label.grid(row = 0, column = 0, columnspan = 3, rowspan = 4)
+        label.grid(row = 0, column = 0)
 
-        Label(self, text = 'RAASNet Generator', background = 'white', foreground = 'red', font='Helvetica 32 bold').grid(row = 2, column = 3, columnspan = 3)
+        Label(self, text = 'RAASNet Generator', background = 'white', foreground = 'red', font='Helvetica 32 bold').grid(row = 1, column = 0)
 
         # Buttons
-        start_server = Button(self, text = "START SERVER", command = self.open_server, width = 53).grid(row = 4, column = 0, columnspan = 6)
+        start_server = HoverButton(self, text = "START SERVER", command = self.open_server, width = 53).grid(row = 2, column = 0)
+        decrypt = HoverButton(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 3, column = 0)
 
-        generate_demon = Button(self, text = "GENERATE PAYLOAD", command = self.generate, width = 53).grid(row = 5, column = 0, columnspan = 6)
-        compile = Button(self, text = "COMPILE PAYLOAD", command = self.compile, width = 53).grid(row = 6, column = 0, columnspan = 6)
-        decrypt = Button(self, text = "DECRYPT FILES", command = self.decrypt_files, width = 53).grid(row = 7, column = 0, columnspan = 6)
+        generate_demon = HoverButton(self, text = "GENERATE PAYLOAD", command = self.generate, width = 53).grid(row = 4, column = 0)
+        compile = HoverButton(self, text = "COMPILE PAYLOAD", command = self.compile, width = 53).grid(row = 5, column = 0)
 
-        profile = Button(self, text = "PROFILE", command = self.profile, width = 53)
-        profile.grid(row = 12, column = 0, columnspan = 6)
 
-        exit = Button(self, text = "EXIT", command = self.exit, width = 53).grid(row = 13, column = 0, columnspan = 6)
+        profile = HoverButton(self, text = "PROFILE", command = self.profile, width = 53)
+        profile.grid(row = 6, column = 0)
+
+        exit = HoverButton(self, text = "EXIT", command = self.exit, width = 53).grid(row = 7, column = 0)
 
     def profile(self):
 
@@ -696,11 +712,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Label(self.prof, text = 'Status: ', background = 'white').grid(row = 6, column = 0, sticky = 'w')
         Label(self.prof, text = self.options['status'].get(), background = 'white').grid(row = 6, column = 1, sticky = 'w')
 
-        delete = Button(self.prof, text = "DELETE PROFILE", command = self.delete_me, width = 53)
-        delete.grid(row = 6, column = 0, columnspan = 2)
+        delete = HoverButton(self.prof, text = "DELETE PROFILE", command = self.delete_me, width = 53)
+        delete.grid(row = 7, column = 0, columnspan = 2)
 
     def delete_me(self):
-        return messagebox.showinfo('Cannot do that', 'Please, visit: http://jezsjxtthkqhlqoc.onion/ with Tor browser and login.\n\nYou can delete your profile under the Profile section there.')
+        return messagebox.showinfo('Cannot do that', 'Please, visit our onion site with Tor browser and login.\n\nYou can delete your profile under the Profile section there.')
 
     def exploit_options(self):
         self.exp = Toplevel()
@@ -737,10 +753,10 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             self.options['host'] == host
             self.options['port'] == port
 
-        go = Button(self.set, text = 'Ok', command = self.run_server, width = 30)
+        go = HoverButton(self.set, text = 'Ok', command = self.run_server, width = 30)
         go.grid(row = 7, column = 0, columnspan = 2)
         self.set.bind('<Return>', self.set.destroy)
-        exit = Button(self.set, text = 'Cancel', command = self.set.destroy, width = 30).grid(row = 8, column = 0, columnspan = 2)
+        exit = HoverButton(self.set, text = 'Cancel', command = self.set.destroy, width = 30).grid(row = 8, column = 0, columnspan = 2)
 
     def run_server(self):
         self.set.destroy()
@@ -849,7 +865,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.serv.options['log'].tag_configure('green', foreground='green')
         self.serv.options['log'].tag_configure('bold', font='bold')
 
-        #export_csv = set_ico = Button(self.serv, text = "EXPORT DATA TO CSV", command = self.export_data, width = 50).grid(row = 5, column = 0, columnspan = 4)
+        #export_csv = set_ico = HoverButton(self.serv, text = "EXPORT DATA TO CSV", command = self.export_data, width = 50).grid(row = 5, column = 0, columnspan = 4)
 
         self.start_thread()
 
@@ -872,32 +888,35 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         msg = LabelFrame(self.comp, text = 'Message', relief = GROOVE)
         msg.grid(row = 0, column = 0, columnspan = 3, sticky = 'w')
-        Label(msg, text = 'You seem to be running %s.\nYou can only compile for the OS you are running this software on.' % platform.system(), background = 'white', font='Helvetica 16').grid(row = 0, column = 0)
+        Label(msg, text = 'You seem to be running %s.\nYou can only compile for the OS you are running this software on.' % platform.system(), background = 'white', font='Helvetica 14').grid(row = 0, column = 0)
 
         os_frame = LabelFrame(self.comp, text = 'Select OS')
-        os_frame.grid(row = 1, column = 0)
+        os_frame.grid(row = 1, column = 0, sticky = 'w')
         win = Radiobutton(os_frame, text = 'Windows', variable = self.options['os'], value = 'windows')
         win.grid(row = 0, column = 0, sticky = 'w')
         mac = Radiobutton(os_frame, text = 'MacOS', variable = self.options['os'], value = 'mac')
         mac.grid(row = 1, column = 0, sticky = 'w')
         lin = Radiobutton(os_frame, text = 'Linux', variable = self.options['os'], value = 'linux')
         lin.grid(row = 2, column = 0, sticky = 'w')
-        an = Radiobutton(os_frame, text = 'Android (In Development)', variable = self.options['os'], value = 'android')
-        an.grid(row = 3, column = 0, sticky = 'w')
 
         sett_frame = LabelFrame(self.comp, text = 'Options')
-        sett_frame.grid(row = 1, column = 1, columnspan = 2)
-        Entry(sett_frame, textvariable = self.options['icon_path'], width = 50).grid(row = 0, column = 0)
-        set_ico = Button(sett_frame, text = "SELECT ICON", command = self.select_icon, width = 15).grid(row = 0, column = 1)
+        sett_frame.grid(row = 1, column = 1, columnspan = 2, sticky = 'w')
+        Label(sett_frame, text = 'Icon', font='Helvetica 11').grid(row = 0, column = 0, sticky = 'w')
+        Entry(sett_frame, textvariable = self.options['icon_path'], width = 50).grid(row = 0, column = 1)
+        set_ico = HoverButton(sett_frame, text = "...", command = self.select_icon, width = 3).grid(row = 0, column = 2, sticky = 'e')
 
-        Entry(sett_frame, textvariable = self.options['payload_path'], width = 50).grid(row = 1, column = 0)
-        set_payload = Button(sett_frame, text = "SELECT PAYLOAD", command = self.select_payload, width = 15).grid(row = 1, column = 1)
-        Entry(sett_frame, textvariable = self.options['decryptor_path'], width = 50).grid(row = 2, column = 0)
-        set_decryptor = Button(sett_frame, text = "SELECT DECRYPTOR", command = self.select_decryptor, width = 15).grid(row = 2, column = 1)
+        Label(sett_frame, text = 'Payload', font='Helvetica 11').grid(row = 1, column = 0, sticky = 'w')
+        Entry(sett_frame, textvariable = self.options['payload_path'], width = 50).grid(row = 1, column = 1)
+        set_payload = HoverButton(sett_frame, text = "...", command = self.select_payload, width = 3).grid(row = 1, column = 2, sticky = 'e')
+
+        Label(sett_frame, text = 'Decryptor', font='Helvetica 11').grid(row = 2, column = 0, sticky = 'w')
+        Entry(sett_frame, textvariable = self.options['decryptor_path'], width = 50).grid(row = 2, column = 1)
+        set_decryptor = HoverButton(sett_frame, text = "...", command = self.select_decryptor, width = 3, height = 0).grid(row = 2, column = 2, sticky = 'e')
 
         opt_frame = LabelFrame(self.comp, text = 'Finishing')
-        opt_frame.grid(row = 2, column = 0, columnspan = 2)
-        finish = Button(opt_frame, text = "FINISH", command = self.compile_payload, width = 45).grid(row = 0, column = 0)
+        opt_frame.grid(row = 2, column = 0, columnspan = 2, sticky='w')
+        finish = HoverButton(opt_frame, text = "FINISH", command = self.compile_payload, width = 75, height = 2).grid(row = 0, column = 0)
+        close_comp = HoverButton(opt_frame, text = 'Cancel', command = self.comp.destroy, width = 75).grid(row = 1, column = 0)
 
         if platform.system() == 'Windows':
             self.options['os'].set('windows')
@@ -911,7 +930,6 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
             self.options['os'].set('linux')
             win.config(state = DISABLED)
             mac.config(state = DISABLED)
-        an.config(state = DISABLED)
 
     def compile_payload(self):
         icon = False
@@ -1040,16 +1058,16 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         content_frame = LabelFrame(self.gen, text = 'Content')
         content_frame.grid(row = 1, column = 0, sticky = 'nw')
-        set_msg = Button(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
-        set_img = Button(content_frame, text = 'CUSTOM IMAGE', command = self.set_img, width = 25).grid(row = 1, column = 0)
-        set_ext = Button(content_frame, text = 'CUSTOM FILE EXTENTIONS', command = self.set_ext, width = 25).grid(row = 2, column = 0)
+        set_msg = HoverButton(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
+        set_img = HoverButton(content_frame, text = 'CUSTOM IMAGE', command = self.set_img, width = 25).grid(row = 1, column = 0)
+        set_ext = HoverButton(content_frame, text = 'CUSTOM FILE EXTENTIONS', command = self.set_ext, width = 25).grid(row = 2, column = 0)
 
-        target_frame = LabelFrame(self.gen, text = 'Content')
+        target_frame = LabelFrame(self.gen, text = 'Filesystem')
         target_frame.grid(row = 1, column = 1, sticky = 'nw')
-        set_dirs = Button(target_frame, text = 'SET TARGET DIRS', command = self.set_dirs, width = 25).grid(row = 0, column = 0)
+        set_dirs = HoverButton(target_frame, text = 'SET TARGET DIRS', command = self.set_dirs, width = 25).grid(row = 0, column = 0)
 
         enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
-        enc_frame.grid(row = 0, column = 2, sticky = 'w')
+        enc_frame.grid(row = 0, column = 2, sticky = 'nw')
         Radiobutton(enc_frame, text = 'Ghost (Fastest)', variable = self.options['type'], value = 'ghost').grid(row = 0, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'Wiper (Faster)', variable = self.options['type'], value = 'wiper').grid(row = 1, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 2, column = 0, sticky = 'w')
@@ -1063,13 +1081,14 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Checkbutton(options_frame, text = 'Run as admin (Windows)', variable = self.options['runas'], onvalue = 1, offvalue = 0).grid(row = 3, column = 0, sticky = 'w')
 
         meth_frame = LabelFrame(self.gen, text = 'Encryption Method')
-        meth_frame.grid(row = 2, column = 2, sticky = 'w')
+        meth_frame.grid(row = 2, column = 2, sticky = 'nw')
         Radiobutton(meth_frame, text = 'Override and Rename', variable = self.options['method'], value = 'override').grid(row = 0, column = 0, sticky = 'w')
         Radiobutton(meth_frame, text = 'Copy and Remove', variable = self.options['method'], value = 'copy').grid(row = 1, column = 0, sticky = 'w')
 
         finish_frame = LabelFrame(self.gen, text = 'Finish')
-        finish_frame.grid(row = 2, column = 0, columnspan = 1, sticky = 'w')
-        generate = Button(finish_frame, text = "GENERATE", command = self.make_demon, width = 25).grid(row = 0, column = 0)
+        finish_frame.grid(row = 2, column = 0, columnspan = 2, sticky = 'w')
+        generate = HoverButton(finish_frame, text = "GENERATE", command = self.make_demon, width = 25, height = 2).grid(row = 0, column = 0)
+        exit = HoverButton(finish_frame, text = 'Cancel', command = self.gen.destroy, width = 25).grid(row = 1, column = 0)
 
     def set_img(self):
         try:
@@ -1089,7 +1108,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         self.options['new_msg'] = Text(self.message, height = 25, width = 100)
         self.options['new_msg'].grid(row = 0, column = 0)
-        save = Button(self.message, text = 'SAVE', command = self.change_msg, width = 50).grid(row = 1, column = 0)
+        save = HoverButton(self.message, text = 'SAVE', command = self.change_msg, width = 50).grid(row = 1, column = 0)
 
         self.options['new_msg'].insert(END, self.options['msg'].get())
         self.options['new_msg'].focus()
@@ -1113,7 +1132,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         scrollb.grid(row=0, column=1, sticky='nsew')
         self.options['new_target_ext']['yscrollcommand'] = scrollb.set
 
-        save = Button(self.extentions, text = 'SAVE', command = self.change_target_ext, width = 15).grid(row = 1, column = 0)
+        save = HoverButton(self.extentions, text = 'SAVE', command = self.change_target_ext, width = 15).grid(row = 1, column = 0)
 
         self.options['new_target_ext'].insert(END, self.options['target_ext'].get())
         self.options['new_target_ext'].focus()
@@ -1138,7 +1157,7 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         self.options['new_target_dirs'] = Text(self.dirs, height = 10, width = 40)
         self.options['new_target_dirs'].grid(row = 3, column = 0)
 
-        save = Button(self.dirs, text = 'SAVE', command = self.change_target_dirs, width = 15).grid(row = 4, column = 0)
+        save = HoverButton(self.dirs, text = 'SAVE', command = self.change_target_dirs, width = 15).grid(row = 4, column = 0)
 
         self.options['new_working_dir'].insert(END, self.options['working_dir'].get())
         self.options['new_target_dirs'].insert(END, self.options['target_dirs'].get())
@@ -1487,8 +1506,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         self.options['license'] = Text(self.lic, height = 25, width = 80)
         self.options['license'].grid(row = 0, column = 0, columnspan = 2)
-        decline = Button(self.lic, text = 'DECLINE', command = self.decline_license, width = 25).grid(row = 1, column = 0)
-        agree = Button(self.lic, text = 'AGREE', command = self.agree_license, width = 25).grid(row = 1, column = 1)
+        decline = HoverButton(self.lic, text = 'DECLINE', command = self.decline_license, width = 25).grid(row = 1, column = 0)
+        agree = HoverButton(self.lic, text = 'AGREE', command = self.agree_license, width = 25).grid(row = 1, column = 1)
 
         self.options['license'].insert('1.0', license)
 
