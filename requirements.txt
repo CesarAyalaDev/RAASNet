@@ -1,4 +1,3 @@
-ttkthemes
 pymsgbox
 pyaes
 pycryptodome
