@@ -131,7 +131,7 @@ class HoverButton(tk.Button):
         self['highlightbackground']= '#545b62'
         self['activebackground']   = '#ef5350'
         self['fg']                 = 'blue'
-        self['font']               = 'papyrus 24 bold'
+        self['font']               = 'papyrus 14 bold'
         self['relief']             = FLAT
         self.defaultBackground     = self['bg']
 
