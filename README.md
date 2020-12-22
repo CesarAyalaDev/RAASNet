@@ -13,6 +13,10 @@
    Relay:
    
    ust2an5ovtpxroqw7q2wfzi25lvvcuj7h2avjy66k42f3rabzdpz6pad.onion
+   
+   JOIN OUR IRC:
+   
+   4ja6cgrcfyebyqvvun3dnayv33wvxsnhptft6dd3kkzacardz2cwjnad.onion/9923
 </h2>
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
