@@ -16,7 +16,7 @@
    
    JOIN OUR IRC:
    
-   4ja6cgrcfyebyqvvun3dnayv33wvxsnhptft6dd3kkzacardz2cwjnad.onion/9923
+   6qpm6cpgz3siikgnxl4bxywmrg7obxenjzxupynz2dqwrw73rr2c3syd.onion:9924/
 </h2>
 
 ![license](https://img.shields.io/github/license/leonv024/RAASNet "License")
