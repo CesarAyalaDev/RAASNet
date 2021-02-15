@@ -60,7 +60,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 </h1>
 <br>
 <p align=center>
-   This was made to demonstrate ransomware and how easy it is to make. It works on Windows, Linux and MacOS. It's recommended to compile payload.py to EXE to make it more portable.
+   This project was made to demonstrate how easy ransomware are easy to make and how it work. The script works on Windows, Linux and MacOS. It is recommended to compile payload.py to EXE format to make it more portable.
 </p>
 
 <p align=center>
@@ -72,7 +72,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 </p>
 
 <p align=center>
-   I recommend a VPN that allows port forwarding (For example; PIA VPN) when using this outside your network, or better, a cloud computer hosted elsewhere, like Amazon AWS. 
+   I recommend using a VPN that allows port forwarding (For example; PIA VPN) when using this outside your network, or better, a cloud computer hosted elsewhere, like Amazon AWS. 
 </p>
 
 <p align=center>
