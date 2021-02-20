@@ -104,6 +104,7 @@ alt="RAASNet demo" width="240" height="180" border="10" /></a>
 + Decide if payload should self-destruct (Console mode feature only)
 + Decide wich drive to target for encryption (working directory)
 + Verified server access through port forwarding VPN
++ Encode payload as Morse code
 
 <h1 align="center">
    Installation
