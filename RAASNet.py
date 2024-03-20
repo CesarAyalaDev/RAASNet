@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 '''
+Mar 2024 - allowed blank login, updated module calls
+
 ====================================== WELCOME TO RAASNet ==========================================
 
 Your Ransomware As A Service (RAAS) Tool for all your hacking needs.
@@ -170,19 +172,19 @@ class Login(Tk):
 
         if platform.system() == 'Linux':
             photo = Image.open('images/login_img.png')
-            resized = photo.resize((200,250), Image.ANTIALIAS)
+            resized = photo.resize((200,250), Image.LANCZOS)
             photo = ImageTk.PhotoImage(resized)
 
             photo2 = Image.open('images/an.jpg')
-            resized2 = photo2.resize((318,500), Image.ANTIALIAS)
+            resized2 = photo2.resize((318,500), Image.LANCZOS)
             photo2 = ImageTk.PhotoImage(resized2)
         else:
             photo = PIL.Image.open('images/login_img.png')
-            resized = photo.resize((200,250), PIL.Image.ANTIALIAS)
+            resized = photo.resize((200,250), PIL.Image.LANCZOS)
             photo = PIL.ImageTk.PhotoImage(resized)
 
             photo2 = PIL.Image.open('images/an.jpg')
-            resized2 = photo2.resize((320,500), PIL.Image.ANTIALIAS)
+            resized2 = photo2.resize((320,500), PIL.Image.LANCZOS)
             photo2 = PIL.ImageTk.PhotoImage(resized2)
 
         label2 = Label(self, image=photo2, background = 'white')
@@ -215,30 +217,18 @@ class Login(Tk):
         check_pwd = hashlib.sha256(self.options['pwd'].get().encode('utf-8')).hexdigest()
 
         payload = {'user': self.options['username'].get(), 'pwd': check_pwd}
+        prof1 = "No email"
+        prof2 = "No name"
+        prof3 = "No surname"
+        prof4 = "No rank"
+        prof5 = "No Status"
+        pass
+        self.destroy()
+        main = MainWindow(self.options['username'].get(), self.options['pwd'].get(), prof1, prof2, prof3, prof4, prof5)
+        main.mainloop()
+    
 
-        r = requests.post('https://zeznzo.nl/login.py', data=payload)
-        if r.status_code == 200:
-            if r.text.startswith('[ERROR]'):
-                messagebox.showwarning('ERROR', r.text.split('[ERROR] ')[1])
-                return
-            elif r.text.startswith('[OK]'):
-                data = r.text[13:]
-                data = data.split('\n')
-                prof = {}
-
-                try:
-                    for i in data:
-                        i = i.split('=')
-                        prof[i[0]] = i[1]
-                except Exception:
-                    pass
-
-                self.destroy()
-                main = MainWindow(self.options['username'].get(), self.options['pwd'].get(), prof['Email'], prof['Name'], prof['Surname'], prof['Rank'], prof['Status'])
-                main.mainloop()
-        else:
-            messagebox.showwarning('ERROR', 'Failed to contact login server!\n%i' % r.status_code)
-            return
+        
 
     def exit(self, event):
         sys.exit(0)
@@ -251,11 +241,11 @@ class Login(Tk):
 
         if platform.system() == 'Linux':
             reg_photo = Image.open('images/reg.png')
-            resized = reg_photo.resize((200,250), Image.ANTIALIAS)
+            resized = reg_photo.resize((200,250), Image.LANCZOS)
             reg_photo = ImageTk.PhotoImage(resized)
         else:
             reg_photo = PIL.Image.open('images/reg.png')
-            resized = reg_photo.resize((200,250), PIL.Image.ANTIALIAS)
+            resized = reg_photo.resize((200,250), PIL.Image.LANCZOS)
             reg_photo = PIL.ImageTk.PhotoImage(resized)
 
         label = Label(self.reg, image=reg_photo, background = 'white')
@@ -304,11 +294,11 @@ class Login(Tk):
 
         if platform.system() == 'Linux':
             photo = Image.open(resource_path('images/incsec_full.png'))
-            resized = photo.resize((350,150), Image.ANTIALIAS)
+            resized = photo.resize((350,150), Image.LANCZOS)
             photo = ImageTk.PhotoImage(resized)
         else:
             photo = PIL.Image.open(resource_path('images/incsec_full.png'))
-            resized = photo.resize((300,100), PIL.Image.ANTIALIAS)
+            resized = photo.resize((300,100), PIL.Image.LANCZOS)
             photo = PIL.ImageTk.PhotoImage(resized)
 
         label = Label(self.contact, image=photo, background = 'white')
@@ -655,11 +645,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         if platform.system() == 'Linux':
             photo = Image.open(resource_path('images/logo2.png'))
-            resized = photo.resize((150,150), Image.ANTIALIAS)
+            resized = photo.resize((150,150), Image.LANCZOS)
             photo = ImageTk.PhotoImage(resized)
         else:
             photo = PIL.Image.open(resource_path('images/logo2.png'))
-            resized = photo.resize((150,150), PIL.Image.ANTIALIAS)
+            resized = photo.resize((150,150), PIL.Image.LANCZOS)
             photo = PIL.ImageTk.PhotoImage(resized)
 
         label = Label(self, image=photo, background = 'white')
@@ -692,11 +682,11 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
 
         if platform.system() == 'Linux':
             photo = Image.open(resource_path('images/incsec_full.png'))
-            resized = photo.resize((350,150), Image.ANTIALIAS)
+            resized = photo.resize((350,150), Image.LANCZOS)
             photo = ImageTk.PhotoImage(resized)
         else:
             photo = PIL.Image.open(resource_path('images/incsec_full.png'))
-            resized = photo.resize((350,150), PIL.Image.ANTIALIAS)
+            resized = photo.resize((350,150), PIL.Image.LANCZOS)
             photo = PIL.ImageTk.PhotoImage(resized)
 
         label = Label(self.prof, image=photo, background = 'white')
@@ -797,16 +787,16 @@ vV4t+0UE/G5fAN2ccz9Ug6PdAAAAAElFTkSuQmCC''')
         #photo = PIL.ImageTk.PhotoImage(PIL.Image.open(BytesIO(base64.b64decode(photo_code))))
         if platform.system() == 'Linux':
             photo1 = Image.open(resource_path('images/windows.png'))
-            resized = photo1.resize((100,100), Image.ANTIALIAS)
+            resized = photo1.resize((100,100), Image.LANCZOS)
             photo1 = ImageTk.PhotoImage(resized)
         else:
             photo1 = PIL.Image.open(resource_path('images/windows.png'))
-            resized = photo1.resize((100,100), PIL.Image.ANTIALIAS)
+            resized = photo1.resize((100,100), PIL.Image.LANCZOS)
             photo1 = PIL.ImageTk.PhotoImage(resized)
 
         if platform.system() == 'Linux':
             photo2 = Image.open(resource_path('images/mac.png'))
-            resized = photo2.resize((100,100), Image.ANTIALIAS)
+            resized = photo2.resize((100,100), Image.LANCZOS)
             photo2 = ImageTk.PhotoImage(resized)
         else:
             photo2 = PIL.Image.open(resource_path('images/mac.png'))
